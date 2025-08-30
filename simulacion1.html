@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lani App - Simulación Completa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #F2A649; /* Naranja Lani */
+            --secondary-color: #4A4A4A; /* Gris Oscuro */
+            --accent-color: #58B4E9; /* Azul Lani */
+            --bg-light: #f8fafc;
+            --bg-app: #ffffff;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+        }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-light);
+            display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-top: 20px;
+        }
+        .mobile-screen {
+            width: 100%; max-width: 390px; height: 844px; background-color: var(--bg-app);
+            border-radius: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); display: flex;
+            flex-direction: column; overflow: hidden; border: 8px solid #111; position: relative;
+        }
+
+        /* slider: ahora controlado también por JS (se establece width dinámicamente) */
+        .slider-wrapper { display: flex; height: 100%; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
+
+        /* cada screen tendrá su width/flex fijado por JS (aun así mantenemos estilos base) */
+        .screen { height: 100%; display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; }
+
+        /* --- Onboarding Screens --- */
+        #screen-welcome { justify-content: flex-end; position: relative; }
+        .welcome-slideshow {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+        .welcome-slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .welcome-slide.active { opacity: 1; }
+        .welcome-slide::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.1) 60%);
+        }
+        .welcome-content {
+            background-color: white;
+            padding: 30px 25px 40px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .welcome-content h1 { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+        .welcome-content p { font-size: 16px; color: var(--text-light); margin-top: 8px; margin-bottom: 24px; }
+        .welcome-btn { display: block; width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; text-align: center; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-secondary { background-color: transparent; color: var(--secondary-color); border: 2px solid var(--border-color); margin-top: 12px; }
+
+        #screen-phone-login, #screen-code-verify { padding: 40px 25px; background-color: var(--bg-app); }
+        .onboarding-title { font-size: 28px; font-weight: 800; color: var(--text-dark); }
+        .onboarding-subtitle { font-size: 16px; color: var(--text-light); margin-top: 8px; }
+        .form-group { margin-top: 30px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--secondary-color); margin-bottom: 8px; }
+        .input-phone { display: flex; }
+        .input-phone .prefix { padding: 12px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-right: none; border-radius: 8px 0 0 8px; font-weight: 500;}
+        .input-phone input { border-radius: 0 8px 8px 0; border-left: none; }
+        input, select, textarea { width: 100%; padding: 12px 16px; font-size: 16px; border: 1px solid var(--border-color); background-color: var(--input-bg); border-radius: 8px; box-sizing: border-box; color: var(--text-dark); -webkit-appearance: none; font-family: 'Inter', sans-serif; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(88, 180, 233, 0.3); }
+        .code-inputs { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
+        .code-inputs input { width: 48px; height: 56px; text-align: center; font-size: 24px; font-weight: 700; }
+        .resend-link { margin-top: 20px; text-align: center; font-size: 14px; color: var(--accent-color); cursor: pointer; }
+        .onboarding-footer { margin-top: auto; padding-bottom: 20px;}
+        .onboarding-footer .welcome-btn { background-color: var(--accent-color); }
+        .terms-check { margin-top: 20px; display: flex; align-items: center; text-align: left; }
+        .terms-check input { width: auto; margin-right: 10px; accent-color: var(--primary-color); }
+        .terms-check label { font-size: 12px; color: var(--text-light); margin-bottom: 0;}
+        .terms-check a { color: var(--accent-color); text-decoration: underline; }
+
+        /* --- General App Styles --- */
+        header { background-color: var(--bg-app); padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 10; }
+        header .logo { height: 30px; width: auto; }
+        .header-icon { background: none; border: none; padding: 0; cursor: pointer; }
+        main { flex-grow: 1; overflow-y: auto; background-color: var(--bg-light); }
+        .home-header { padding: 25px; background: linear-gradient(180deg, var(--primary-color) 0%, #d98e3b 100%); color: white; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        .home-header h1 { font-size: 24px; margin: 0; font-weight: 700; }
+        .home-header p { font-size: 16px; opacity: 0.9; margin: 4px 0 0 0; }
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .dash-card { text-align: center; }
+        .dash-card .value { font-size: 18px; font-weight: 700; }
+        .dash-card .label { font-size: 12px; opacity: 0.9; }
+        .section-title { padding: 20px 25px 10px; font-size: 18px; font-weight: 600; color: var(--text-dark); }
+        .bottom-nav { display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border-color); background-color: white; margin-top: auto; flex-shrink: 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); font-size: 12px; cursor: pointer; flex: 1; text-align: center; }
+        .nav-item.active { color: var(--accent-color); }
+        .branch-card, .cash-register-card, .info-card, .action-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; }
+        .branch-card { margin: 0 25px 15px; padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .branch-card .icon, .cash-register-card .icon { flex-shrink: 0; color: var(--accent-color); }
+        .branch-card .content { flex-grow: 1; }
+        .branch-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 18px; }
+        .branch-stats, .cash-register-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; text-align: center; }
+        .stat-item .value { font-weight: 600; font-size: 14px; }
+        .stat-item .label { font-size: 12px; color: var(--text-light); }
+        .cash-register-list { padding: 0 25px; }
+        .cash-register-card { padding: 15px; margin-bottom: 15px; cursor: pointer; }
+        .cash-register-header { display: flex; justify-content: space-between; align-items: center; }
+        .cash-register-info .name { font-weight: 600; }
+        .cash-register-info .employee { font-size: 14px; color: var(--text-light); }
+        .status { font-size: 14px; font-weight: 500; padding: 4px 8px; border-radius: 12px; }
+        .status.open { color: var(--success-color); background-color: #ecfdf5; }
+        .status.closed { color: var(--danger-color); background-color: #fef2f2; }
+        .info-card { margin: 0 25px 15px; padding: 15px; }
+        .info-card h3 { font-size: 16px; margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px; color: var(--secondary-color); }
+        .info-list-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .info-list-item:last-child { border-bottom: none; }
+        .promo-button { background-color: var(--accent-color); color: white; border:none; font-weight: 600; font-size: 12px; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+        .promo-view { padding: 25px; }
+        .promo-card { background: white; border-radius: 0.75rem; border: 1px solid var(--border-color); padding: 1.5rem; }
+        .promo-plan { padding: 1rem; border: 2px solid var(--border-color); border-radius: 0.75rem; text-align: center; cursor: pointer; }
+        .promo-plan.selected { border-color: var(--accent-color); background-color: #eff6ff; }
+        .promo-plan h4 { font-size: 18px; font-weight: 700; color: var(--secondary-color); }
+        .promo-plan .price { font-size: 24px; font-weight: 800; color: var(--accent-color); margin: 8px 0; }
+        .promo-plan .description { font-size: 12px; color: var(--text-light); }
+        .promo-summary { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1rem; border-radius: 0.75rem; }
+        .promo-summary .social-icons { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+        .promo-summary .social-icons svg { width: 24px; height: 24px; }
+        .save-btn { width: 100%; padding: 16px; background-color: var(--primary-color); color: white; font-weight: 600; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; margin-top: 10px; }
+        .toggle-btn.active { background: white; color: var(--accent-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-light); }
+        .toggle-switch { display: flex; background: var(--input-bg); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+        .denominations-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 15px; align-items: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--border-color); }
+        .denominations-grid label { margin-bottom: 0; font-weight: 600; }
+        .denominations-grid input { padding: 8px; text-align: center; width: 100%; box-sizing: border-box; }
+        .link-like { color: var(--accent-color); cursor: pointer; font-weight: 500; font-size: 14px; text-align: right; margin-top: -10px; margin-bottom: 20px; }
+        .summary-box { background: var(--bg-light); border-radius: 12px; padding: 20px; margin-top: 20px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+        .summary-row.total { font-weight: 700; font-size: 18px; margin-top: 15px; padding-top: 15px; border-top: 2px solid var(--border-color); }
+        .difference-row .value.positive { color: var(--success-color); }
+        .difference-row .value.negative { color: var(--danger-color); }
+        .scanner-view, .cash-flow-form, .form-view { padding: 25px; }
+    </style>
+</head>
+<body>
+    <div class="mobile-screen">
+        <div class="slider-wrapper">
+            
+            <div class="screen" id="screen-welcome">
+                <div class="welcome-slideshow">
+                    <div class="welcome-slide active" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1170&auto=format&fit=crop');"></div>
+                    <div class="welcome-slide" style="background-image: url('https://images.unsplash.com/photo-1528605248644-eff4807ee2fd?q=80&w=1170&auto=format&fit=crop');"></div>
+                    <div class="welcome-slide" style="background-image: url('https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1170&auto=format&fit=crop');"></div>
+                </div>
+                <div class="welcome-content">
+                    <h1>Tu negocio, siempre bajo control y con confianza</h1>
+                    <p>Con LANI, gestiona tus ventas, inventario y deudas sin estrés. Tu socio digital que te acompaña en cada paso hacia el crecimiento.</p>
+                    <button class="welcome-btn btn-primary" data-screen="1">Empezar</button>
+                    <button class="welcome-btn btn-secondary" data-screen="1">Ya tengo una cuenta</button>
+                </div>
+            </div>
+
+            <div class="screen" id="screen-phone-login">
+                <h2 class="onboarding-title">Tu negocio, siempre bajo control desde tu celular.</h2>
+                <p class="onboarding-subtitle">Ingresa tu número de celular y te enviaremos un código para iniciar sesión. Llevar el control de tu negocio nunca fue tan fácil.</p>
+                <div class="form-group">
+                    <label for="phone-number">Número de celular</label>
+                    <div class="input-phone">
+                        <span class="prefix">+505</span>
+                        <input type="tel" id="phone-number" placeholder="8888 8888">
+                    </div>
+                </div>
+                 <div class="terms-check">
+                    <input type="checkbox" id="terms" name="terms">
+                    <label for="terms">Acepto los <a href="#">Términos y Condiciones</a> y la <a href="#">Política de Privacidad</a>.</label>
+                </div>
+                <div class="onboarding-footer">
+                    <button class="welcome-btn" data-screen="2" id="phone-continue-btn">Continuar</button>
+                </div>
+            </div>
+
+            <div class="screen" id="screen-code-verify">
+                <h2 class="onboarding-title">Ingresa tu código</h2>
+                <p class="onboarding-subtitle">Te lo enviamos a tu teléfono <span id="display-phone-number"></span>.</p>
+                <div class="form-group">
+                    <div class="code-inputs">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                        <input type="number" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="resend-link">Reenviar en 56 segundos</div>
+                <div class="onboarding-footer">
+                    <button class="welcome-btn" data-screen="3" id="verify-code-btn">Verificar y Entrar</button>
+                </div>
+            </div>
+
+            <div class="screen" id="screen-home-admin">
+        <header>
+  <div style="width: 24px;"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+    alt="Lani Logo" 
+    class="logo" 
+    style="max-height: 40px; width: auto;"
+  >
+  <button class="header-icon" id="switchUser">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  </button>
+</header>
+                <main>
+                    <div class="home-header">
+                        <h1>Buenos Dias, Ana! (Admin)</h1>
+                        <p>Resumen de tu negocio hoy</p>
+                        <div class="dashboard">
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 8,750</div><div class="label">Ingresos</div></div>
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 1,840</div><div class="label">Egresos</div></div>
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 6,910</div><div class="label">Ganancia</div></div>
+                        </div>
+                    </div>
+                    <div class="section-title">Sucursales</div>
+                    <div class="branch-card" data-screen="4">
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"></path><path d="M2 20h20"></path><path d="M14 12v.01"></path><path d="M10 12v.01"></path><path d="M10 16v.01"></path><path d="M14 16v.01"></path><path d="M10 8v.01"></path><path d="M14 8v.01"></path></svg></div>
+                        <div class="content"><div class="branch-header"><span>Sucursal Principal</span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div><div class="branch-stats"><div class="stat-item"><div class="value" style="color: var(--success-color)">2</div><div class="label">Cajas Activas</div></div><div class="stat-item"><div class="value">Café Molido</div><div class="label">Top Producto</div></div><div class="stat-item"><div class="value">Efectivo</div><div class="label">Top Pago</div></div></div></div>
+                    </div>
+                     <div class="branch-card" data-screen="4">
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"></path><path d="M2 20h20"></path><path d="M14 12v.01"></path><path d="M10 12v.01"></path><path d="M10 16v.01"></path><path d="M14 16v.01"></path><path d="M10 8v.01"></path><path d="M14 8v.01"></path></svg></div>
+                        <div class="content"><div class="branch-header"><span>Sucursal Masaya</span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div><div class="branch-stats"><div class="stat-item"><div class="value" style="color: var(--success-color)">1</div><div class="label">Caja Activa</div></div><div class="stat-item"><div class="value">Gaseosa 3L</div><div class="label">Top Producto</div></div><div class="stat-item"><div class="value">Tarjeta</div><div class="label">Top Pago</div></div></div></div>
+                    </div>
+                </main>
+                <nav class="bottom-nav">
+                    <div class="nav-item active" data-screen="3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>Inicio</span></div>
+                    <div class="nav-item" data-screen="9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span>Ventas</span></div>
+                    <div class="nav-item" data-screen="8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg><span>Productos</span></div>
+                    <div class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span>Reportes</span></div>
+                </nav>
+            </div>
+            
+            <div class="screen" id="screen-branch-detail">
+        <header>
+  <div style="width: 24px;"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+    alt="Lani Logo" 
+    class="logo" 
+    style="max-height: 40px; width: auto;"
+  >
+  <button class="header-icon" id="switchUser">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  </button>
+</header>
+                <main>
+                    <div class="section-title">Sucursal Principal</div>
+                    <div class="cash-register-list">
+                         <div class="cash-register-card" data-screen="6">
+                             <div class="cash-register-header">
+                                 <div class="cash-register-info"><div class="name">Caja 1</div><div class="employee">Carlos Pérez</div></div>
+                                 <div class="status open">Abierta</div>
+                             </div>
+                             <div class="cash-register-stats">
+                                 <div class="stat-item"><div class="value" style="color: var(--success-color)">C$4,500</div><div class="label">Ingresos</div></div>
+                                 <div class="stat-item"><div class="value" style="color: var(--danger-color)">C$150</div><div class="label">Egresos</div></div>
+                                 <div class="stat-item"><div class="value" style="color: var(--secondary-color)">C$4,350</div><div class="label">Saldo</div></div>
+                             </div>
+                         </div>
+                         <div class="cash-register-card" data-screen="6">
+                             <div class="cash-register-header">
+                                 <div class="cash-register-info"><div class="name">Caja 2</div><div class="employee">María López</div></div>
+                                 <div class="status open">Abierta</div>
+                             </div>
+                             <div class="cash-register-stats">
+                                 <div class="stat-item"><div class="value" style="color: var(--success-color)">C$4,250</div><div class="label">Ingresos</div></div>
+                                 <div class="stat-item"><div class="value" style="color: var(--danger-color)">C$1,690</div><div class="label">Egresos</div></div>
+                                 <div class="stat-item"><div class="value" style="color: var(--secondary-color)">C$2,560</div><div class="label">Saldo</div></div>
+                             </div>
+                         </div>
+                    </div>
+                     <div class="info-card">
+                         <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Top 5 Productos Vendidos</h3>
+                         <div class="info-list-item"><span class="name">1. Café Molido 500g</span><button class="promo-button" data-screen="11">Promocionar</button></div>
+                         <div class="info-list-item"><span class="name">2. Gaseosa 3L</span><button class="promo-button" data-screen="11">Promocionar</button></div>
+                         <div class="info-list-item"><span class="name">3. Pan Molde</span><button class="promo-button" data-screen="11">Promocionar</button></div>
+                     </div>
+                     <div class="info-card">
+                        <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 15h0"></path><path d="M2 9h20"></path></svg>Medios de Pago Más Usados</h3>
+                        <div class="info-list-item"><span class="name">1. Efectivo</span><span class="value">C$ 5,800.00</span></div>
+                        <div class="info-list-item"><span class="name">2. Tarjeta</span><span class="value">C$ 2,150.50</span></div>
+                    </div>
+                </main>
+            </div>
+            
+            <div class="screen" id="screen-home-cashier">
+        <header>
+  <div style="width: 24px;"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+    alt="Lani Logo" 
+    class="logo" 
+    style="max-height: 40px; width: auto;"
+  >
+  <button class="header-icon" id="switchUser">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  </button>
+</header>
+                <main>
+                    <div class="home-header">
+                        <h1>¡Hola, Carlos, Buenos días! (Cajero)</h1>
+                        <p>Tu Resumen de hoy</p>
+                        <div class="dashboard">
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 4,500</div><div class="label">Ingresos</div></div>
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 150</div><div class="label">Egresos</div></div>
+                            <div class="dash-card"><div class="value" style="color: #fff;">C$ 10</div><div class="label">Sobrante</div></div>
+                        </div>
+                    </div>
+                    <div class="quick-actions" style="display: grid; grid-template-columns: 1fr 1fr; padding: 25px; gap: 15px;">
+                        <div class="action-card" data-screen="9" style="padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>Registrar Venta</div>
+                        <div class="action-card" data-screen="7" style="padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Registrar Gasto</div>
+                        <div class="action-card" data-screen="6" style="grid-column: 1 / -1; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M12 8V2M4 12H2M10 12H4M16 12h-4M22 12h-4M18 18l-1.5-1.5M18 6l-1.5 1.5M6 18l1.5-1.5M6 6l1.5 1.5"/></svg>Abrir/Cerrar Caja</div>
+                    </div>
+                </main>
+                <nav class="bottom-nav">
+                    <div class="nav-item active" data-screen="5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>Inicio</span></div>
+                </nav>
+            </div>
+
+            <!-- Parte 2 - pantallas adicionales -->
+            <div class="screen" id="screen-cash-flow">
+        <header>
+  <div style="width: 24px;"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+    alt="Lani Logo" 
+    class="logo" 
+    style="max-height: 40px; width: auto;"
+  >
+  <button class="header-icon" id="switchUser">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  </button>
+</header>
+                <main>
+                    <div class="cash-flow-form">
+                        <h2 style="text-align:left; font-size: 24px; margin-bottom: 20px;">Arqueo de Caja 1</h2>
+                        <div class="toggle-switch">
+                            <button class="toggle-btn active" data-flow="open">Abrir Caja</button>
+                            <button class="toggle-btn" data-flow="close">Cerrar Caja</button>
+                        </div>
+                        <div id="open-box-form">
+                            <div class="form-group"><label for="employee-select">Empleado a Cargo</label><select id="employee-select"><option>Carlos Pérez</option><option>María López</option></select></div>
+                            <div class="form-group"><label for="initial-cash">Monto Inicial</label><input type="number" id="initial-cash" placeholder="C$ 0.00"></div>
+                            <div class="link-like" id="denomination-toggle">Contar por denominación</div>
+                            <div id="denomination-counter" style="display:none;">
+                                <div class="denominations-grid">
+                                    <label>C$ 500</label><input type="number" class="denomination" data-value="500" placeholder="0">
+                                    <label>C$ 100</label><input type="number" class="denomination" data-value="100" placeholder="0">
+                                    <label>C$ 50</label><input type="number" class="denomination" data-value="50" placeholder="0">
+                                    <label>C$ 20</label><input type="number" class="denomination" data-value="20" placeholder="0">
+                                    <label>C$ 10</label><input type="number" class="denomination" data-value="10" placeholder="0">
+                                    <label>C$ 5</label><input type="number" class="denomination" data-value="5" placeholder="0">
+                                </div>
+                            </div>
+                            <button class="save-btn">Iniciar Turno</button>
+                        </div>
+                        <div id="close-box-form" style="display:none;">
+                            <div class="summary-box">
+                                <div class="summary-row"><span>Monto Inicial</span><span>C$ 500.00</span></div>
+                                <div class="summary-row"><span>Ventas en Efectivo</span><span>C$ 4,500.50</span></div>
+                                <div class="summary-row"><span>Gastos en Efectivo</span><span>- C$ 150.00</span></div>
+                                <div class="summary-row total"><span>Efectivo Esperado</span><span id="expected-cash">C$ 4,850.50</span></div>
+                            </div>
+                            <div class="form-group" style="margin-top:20px;"><label for="counted-cash">Monto Contado en Caja</label><input type="number" id="counted-cash" placeholder="C$ 0.00"></div>
+                             <div class="summary-box">
+                                 <div class="summary-row difference-row"><span>Diferencia</span><span id="difference-cash" class="value">C$ 0.00</span></div>
+                             </div>
+                            <div class="form-group" style="margin-top:20px;"><label for="notes">Notas de Cierre</label><textarea id="notes" rows="3" placeholder="Ej: Hubo un faltante de C$10..."></textarea></div>
+                            <button class="save-btn" style="background-color: var(--danger-color);">Finalizar y Cerrar Caja</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <div class="screen" id="screen-expense">
+        <header>
+  <div style="width: 24px;"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+    alt="Lani Logo" 
+    class="logo" 
+    style="max-height: 40px; width: auto;"
+  >
+  <button class="header-icon" id="switchUser">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  </button>
+</header>
+                <main>
+                    <div class="form-view">
+                         <h2 style="text-align:left; font-size: 24px; margin-bottom: 20px;">Registrar Gasto</h2>
+                         <div class="form-group"><label for="expense-type">Tipo de Gasto</label><select id="expense-type"><option>Agua</option><option>Arriendo</option><option>Nómina</option><option>Proveedor</option><option>Otro</option></select></div>
+                         <div class="form-group"><label for="expense-amount">Valor</label><input type="number" id="expense-amount" placeholder="C$ 0.00"></div>
+                         <div class="form-group"><label>Forma de Pago</label><div style="display: flex; gap: 10px;"><div style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; flex: 1; text-align: center; background: var(--input-bg);">Efectivo</div><div style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; flex: 1; text-align: center;">Tarjeta</div><div style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; flex: 1; text-align: center;">Transferencia</div></div></div>
+                         <div class="form-group"><label>Estado</label><div style="display: flex; gap: 10px;"><button style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--input-bg); border-radius: 8px;">Pagado</button><button style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: none; border-radius: 8px;">Deuda</button></div></div>
+                         <div class="form-group"><label>Adjuntar Factura (Opcional)</label><div style="margin:0; width:100%; height:80px; border: 2px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; color: var(--text-light);"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg><span>Subir Imagen</span></div></div>
+                         <button class="save-btn">Guardar Gasto</button>
+                    </div>
+                </main>
+            </div>
+
+            <div class="screen" id="screen-product">
+                <header><button class="header-icon go-back"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><img src="https://i.imgur.com/kQ1g2y1.png" alt="Lani Logo" class="logo"><div style="width: 24px;"></div></header>
+                <main><div class="form-view">
+                    </div></main>
+            </div>
+
+            <div class="screen" id="screen-scanner">
+                <header><button class="header-icon go-back"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><img src="https://i.imgur.com/kQ1g2y1.png" alt="Lani Logo" class="logo"><div style="width: 24px;"></div></header>
+                <main><div class="scanner-view">
+                    </div></main>
+            </div>
+            
+            <div class="screen" id="screen-invoice">
+                <header><button class="header-icon" data-screen="9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><img src="https://i.imgur.com/kQ1g2y1.png" alt="Lani Logo" class="logo"><div style="width: 24px;"></div></header>
+                <div style="padding: 0 25px; font-size: 24px; font-weight: 700;"><h2>Resumen de Venta</h2></div>
+                <main><div id="cartItemsContainer"></div></main>
+                <div>
+                    </div>
+            </div>
+
+            <div class="screen" id="screen-promo">
+                <header><button class="header-icon" data-screen="4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><img src="https://i.imgur.com/kQ1g2y1.png" alt="Lani Logo" class="logo"><div style="width: 24px;"></div></header>
+                <main>
+                    <div class="promo-view">
+                        <div class="promo-card">
+                            <div style="display:flex; align-items:center; gap: 1rem;">
+                               <img src="https://placehold.co/80x80/f3a649/4A4A4A?text=Caf%C3%A9" alt="Producto" style="width: 80px; height: 80px; border-radius: 0.5rem;">
+                               <div>
+                                   <h1 style="font-size: 1.25rem; font-weight: bold; color: #1e293b;">Promocionar Producto</h1>
+                                   <p style="color: #475569;">Café Molido 500g</p>
+                               </div>
+                           </div>
+                           <div style="margin-top: 1.5rem;">
+                               <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #334155; margin-bottom: 0.5rem;">1. Elige tu Impulso</label>
+                               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                                   <div class="promo-plan" data-price="10"><h4 class="font-bold">Básico</h4><p class="price">C$10</p><p class="description">1-2 días</p></div>
+                                   <div class="promo-plan selected" data-price="25"><h4 class="font-bold">Recomendado</h4><p class="price">C$25</p><p class="description">3-5 días</p></div>
+                                   <div class="promo-plan" data-price="50"><h4 class="font-bold">Avanzado</h4><p class="price">C$50</p><p class="description">7 días</p></div>
+                               </div>
+                           </div>
+                           <div class="mt-6 promo-summary">
+                                <h3 style="font-weight: 600;">Esto es lo que obtienes:</h3>
+                                <div id="promo-details">
+                                     <p style="font-size: 0.875rem; color: #475569;">Tu producto llegará a miles de personas en las redes sociales más populares.</p>
+                                     <div class="social-icons">
+                                         </div>
+                                </div>
+                           </div>
+                           <div style="margin-top: 1.5rem;">
+                               <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #334155;">2. Elige tu Público</label>
+                               <select style="margin-top: 0.5rem; display: block; width: 100%; border-radius: 0.375rem; border: 1px solid #d1d5db;">
+                                   <option>Personas en Managua</option>
+                                   <option>Personas en León y Chinandega</option>
+                                   <option>Todo Nicaragua</option>
+                               </select>
+                           </div>
+                           <button class="save-btn">Lanzar Promoción (C$ 25)</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sliderWrapper = document.querySelector('.slider-wrapper');
+            const screens = Array.from(document.querySelectorAll('.screen'));
+            const NUM_SCREENS = screens.length;
+
+            // --- SET SIZES DINÁMICAMENTE (evita hardcode y problemas de shrink) ---
+            function setScreenSizes() {
+                if (!sliderWrapper) return;
+                sliderWrapper.style.width = `${NUM_SCREENS * 100}%`;
+                screens.forEach(s => {
+                    s.style.width = `${100 / NUM_SCREENS}%`;
+                    s.style.flex = `0 0 ${100 / NUM_SCREENS}%`;
+                });
+            }
+            setScreenSizes();
+            window.addEventListener('resize', setScreenSizes);
+
+            // --- Navegación robusta ---
+            let currentScreen = 0;
+            let navigationHistory = [];
+            let isAdminView = true; // Empezamos en vista Admin por defecto
+
+            function goToScreen(screenIndex, pushHistory = true) {
+                screenIndex = Number(screenIndex);
+                if (isNaN(screenIndex) || screenIndex < 0 || screenIndex >= NUM_SCREENS) return;
+                if (screenIndex === currentScreen) return;
+                if (pushHistory) navigationHistory.push(currentScreen);
+                currentScreen = screenIndex;
+                sliderWrapper.style.transform = `translateX(-${currentScreen * (100 / NUM_SCREENS)}%)`;
+            }
+
+            function goBack() {
+                if (navigationHistory.length > 0) {
+                    const prev = navigationHistory.pop();
+                    goToScreen(prev, false);
+                } else {
+                    const homeScreen = isAdminView ? 3 : 5;
+                    goToScreen(homeScreen, false);
+                }
+            }
+
+            // --- Onboarding Slideshow ---
+            const slides = document.querySelectorAll('.welcome-slide');
+            let currentSlide = 0;
+            if (slides.length > 0) {
+                setInterval(() => {
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }, 4000);
+            }
+
+            // --- Demo / Inputs ---
+            const phoneInput = document.getElementById('phone-number');
+            const termsCheck = document.getElementById('terms');
+            const phoneContinueBtn = document.getElementById('phone-continue-btn');
+            const codeInputs = document.querySelectorAll('.code-inputs input');
+
+            function simulateTyping(element, text, callback) {
+                if(!element) { if(callback) callback(); return; }
+                let i = 0;
+                element.value = '';
+                const interval = setInterval(() => {
+                    if (i < text.length) {
+                        let currentVal = element.value;
+                        if (i === 4) currentVal += ' ';
+                        currentVal += text.charAt(i);
+                        element.value = currentVal;
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        if (callback) callback();
+                    }
+                }, 150);
+            }
+
+            function simulateCodeTyping(inputs, code, callback) {
+                if(!inputs || inputs.length === 0) { if(callback) callback(); return; }
+                let i = 0;
+                inputs.forEach(input => input.value = '');
+                const interval = setInterval(() => {
+                    if (i < inputs.length) {
+                        inputs[i].value = code.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        if (callback) callback();
+                    }
+                }, 200);
+            }
+
+            function runOnboardingDemo() {
+                setTimeout(() => {
+                    simulateTyping(phoneInput, '88123456', () => {
+                        setTimeout(() => {
+                            if (termsCheck) termsCheck.checked = true;
+                        }, 500);
+                    });
+                }, 1000);
+            }
+
+            if (phoneContinueBtn) {
+                phoneContinueBtn.addEventListener('click', (ev) => {
+                    const phoneNumberDisplay = document.getElementById('display-phone-number');
+                    if(phoneNumberDisplay && phoneInput) phoneNumberDisplay.textContent = `+505 ${phoneInput.value}`;
+                    // al presionar 'Continuar' también navegamos (hay data-screen="2" y el body click lo manejará),
+                    // además simulamos el tipeo del código:
+                    setTimeout(() => {
+                        simulateCodeTyping(codeInputs, '123456');
+                    }, 1000);
+                });
+            }
+
+            // --- Navegación general: elements con data-screen ---
+            document.body.addEventListener('click', (e) => {
+                const screenTarget = e.target.closest('[data-screen]');
+                if (screenTarget) {
+                    const screenIndex = parseInt(screenTarget.dataset.screen, 10);
+                    if (!isNaN(screenIndex)) {
+                        goToScreen(screenIndex);
+                        if (screenIndex === 1) {
+                            runOnboardingDemo();
+                        }
+                    }
+                }
+            });
+
+            // go-back buttons
+            document.querySelectorAll('.go-back').forEach(btn => btn.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                goBack();
+            }));
+
+            // switch user buttons (seguridad: chequear existencia)
+            const switchUser = document.getElementById('switchUser');
+            if (switchUser) switchUser.addEventListener('click', () => { isAdminView = false; navigationHistory = [3]; goToScreen(5); });
+
+            const switchUser2 = document.getElementById('switchUser2');
+            if (switchUser2) switchUser2.addEventListener('click', () => { isAdminView = true; navigationHistory = [5]; goToScreen(3); });
+
+            // --- Promo logic (se mantiene, usando variables locales) ---
+            const promoPlans = document.querySelectorAll('.promo-plan');
+            const promoDetails = document.getElementById('promo-details');
+            const launchPromoBtn = document.querySelector('#screen-promo .save-btn');
+            const planData = {
+                '10': { text: 'Tu producto se mostrará a personas en tu ciudad en:', icons: ['facebook'] },
+                '25': { text: 'Llegarás a más personas en tu región a través de:', icons: ['facebook', 'instagram'] },
+                '50': { text: 'Máximo alcance en todo el país. Aparecerás en:', icons: ['facebook', 'instagram', 'tiktok'] }
+            };
+            const socialIconsSVG = {
+                facebook: '<svg fill="#1877F2" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02s10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM16.5 8.25h-2.25c-.2 0-.45.1-.45.5v1.5h2.7l-.45 2.25h-2.25V18h-3v-5.5H9V8.25h1.5v-1.5c0-1.5.9-2.7 2.7-2.7h2.1v2.7z"/></svg>',
+                instagram: '<svg fill="url(#insta-gradient)" viewBox="0 0 24 24"><defs><radialGradient id="insta-gradient" cx="0.3" cy="1" r="1"><stop offset="0" stop-color="#FDCB52"/><stop offset="0.5" stop-color="#FD8D32"/><stop offset="1" stop-color="#D13184"/></radialGradient></defs><path d="M12 2c2.7 0 3 .01 4.05.07c1.06.05 1.8.22 2.42.47c.65.25.9.5.47 2.42c.25.62.42 1.36.47 2.42c.06 1.05.07 1.35.07 4.05s-.01 3-.07 4.05c-.05 1.06-.22 1.8-.47 2.42c-.25.65-.5.9-.47-2.42c-.62.25-1.36.42-2.42.47c-1.05.06-1.35.07-4.05.07s-3-.01-4.05-.07c-1.06-.05-1.8-.22-2.42-.47c-.65-.25-.9-.5-.47-2.42c-.25-.62-.42-1.36-.47-2.42c-.06-1.05-.07-1.35-.07-4.05s.01-3 .07-4.05c.05-1.06.22-1.8.47-2.42c.25-.65.5-.9 2.42-.47c.62-.25 1.36-.42 2.42-.47C9 2.01 9.3 2 12 2zm0 1.8c-2.6 0-2.9.01-3.9.06c-.95.05-1.5.2-1.85.34c-.45.18-.73.4-.9.9c-.15.35-.3.9-.34 1.85c-.05 1-.06 1.3-.06 3.9s.01 2.9.06 3.9c.05.95.2 1.5.34 1.85c.18.45.4.73.9.9c.35.15.9.3 1.85.34c1 .05 1.3.06 3.9.06s2.9-.01 3.9-.06c.95-.05 1.5-.2 1.85-.34c.45-.18.73-.4.9-.9c.15-.35.3-.9.34-1.85c.05-1 .06-1.3.06-3.9s-.01-2.9-.06-3.9c-.05-.95-.2-1.5-.34-1.85c-.18-.45-.4-.73-.9-.9c-.35-.15-.9-.3-1.85-.34c-1-.05-1.3-.06-3.9-.06zm0 4.45c-2.4 0-4.35 1.95-4.35 4.35s1.95 4.35 4.35 4.35s4.35-1.95 4.35-4.35s-1.95-4.35-4.35-4.35zm0 7c-1.5 0-2.7-1.2-2.7-2.7s1.2-2.7 2.7-2.7s2.7 1.2 2.7 2.7s-1.2 2.7-2.7 2.7zm4.95-7.7c-.6 0-1.1-.5-1.1-1.1s.5-1.1 1.1-1.1s1.1.5 1.1 1.1s-.5 1.1-1.1 1.1z"/></svg>',
+                tiktok: '<svg fill="#000000" viewBox="0 0 24 24"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17c1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97c-.62-.29-1.2-.65-1.74-1.17c-.02-.02-.03-.04-.05-.06c-.23-.24-.45-.5-.65-.77c-.2-.27-.38-.56-.54-.86c-.16-.3-.29-.62-.4-.95c-.12-.34-.2-.7-.27-1.06v-3.1c-2.1.2-3.8.85-5.23 1.78v4.3c.02.1.03.2.05.3c.21.7.55 1.36 1.02 1.94c.47.58.98 1.12 1.57 1.58c.59.46 1.22.86 1.9 1.18c.68.32 1.39.56 2.12.72c.73.16 1.47.24 2.22.26v4.4c-2.9-.22-5.54-1.33-7.55-3.44c-2.01-2.1-3.01-4.7-3-7.5c.01-2.8 1.01-5.4 3-7.5c2-2.1 4.64-3.2 7.55-3.4z"/></svg>',
+            };
+
+            function updatePromoDetails(price) {
+                const data = planData[price];
+                if (!data || !promoDetails) return;
+                let iconsHTML = data.icons.map(icon => socialIconsSVG[icon]).join('');
+                promoDetails.innerHTML = `<p style="font-size: 0.875rem; color: #475569;">${data.text}</p><div class="social-icons">${iconsHTML}</div>`;
+                if(launchPromoBtn) launchPromoBtn.textContent = `Lanzar Promoción (C$ ${price})`;
+            }
+
+            promoPlans.forEach(plan => {
+                plan.addEventListener('click', () => {
+                    promoPlans.forEach(p => p.classList.remove('selected'));
+                    plan.classList.add('selected');
+                    const price = plan.dataset.price;
+                    updatePromoDetails(price);
+                });
+            });
+
+            // Init visual
+            updatePromoDetails('25');
+            // Start at welcome
+            goToScreen(0, false);
+        });
+    </script>
+</body>
+</html>
