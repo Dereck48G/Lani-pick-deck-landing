@@ -1,0 +1,33 @@
+<div class="screen" id="screen-2fa-email">
+  <header>
+    <!-- back y logo -->
+  </header>
+  <main>
+    <!-- Vista para registrar el correo -->
+    <div id="register-email-view" style="display:none;">
+      <h2>Registrar correo</h2>
+      <p class="helper">Agrega el correo que usaremos como segundo factor de autenticación.</p>
+      <input type="email" id="email-input" placeholder="tu@correo.com" />
+      <button class="save-btn" id="save-email-btn">Guardar correo</button>
+    </div>
+
+    <!-- Vista para verificar el correo -->
+    <div id="verify-email-view" style="display:none;">
+      <h2>Verificación por correo</h2>
+      <p class="helper">Hemos enviado un código temporal a tu correo registrado.</p>
+
+      <div class="code-inputs" id="otp-wrapper-email">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+      </div>
+
+      <div class="resend-link">Reenviar código</div>
+
+      <button class="save-btn" id="verify-email-btn">Verificar correo</button>
+    </div>
+  </main>
+</div>

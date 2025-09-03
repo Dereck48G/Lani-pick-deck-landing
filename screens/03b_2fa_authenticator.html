@@ -1,0 +1,34 @@
+<div class="screen" id="screen-2fa-authenticator">
+  <header>
+    <button class="header-icon go-back" aria-label="Atrás" data-back="3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png"
+      alt="Lani Logo" class="logo">
+    <div style="width:36px;"></div>
+  </header>
+  <main>
+    <div class="sector-view">
+      <h2 style="font-size:22px; font-weight:800; margin:0;">Google Authenticator</h2>
+      <p class="helper">Abre tu aplicación de autenticación y escribe el código temporal.</p>
+
+      <div class="code-inputs" id="otp-wrapper-auth">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+      </div>
+
+      <div class="helper" style="margin-top:12px; text-align:center;">
+        ¿No tienes la app? <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener">Descargar Google Authenticator</a>
+      </div>
+
+      <button class="save-btn" id="verify-auth-btn">Verificar código</button>
+    </div>
+  </main>
+</div>

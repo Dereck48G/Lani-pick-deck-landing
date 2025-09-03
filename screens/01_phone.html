@@ -1,0 +1,36 @@
+<div class="screen" id="screen-phone-login">
+  <div class="onb-wrap">
+    <h2 class="onb-title" id="phone-title">Crea tu cuenta en minutos.</h2>
+    <p class="onb-sub" id="phone-sub">Ingresa tu número de celular y te enviaremos un código. Sin contraseñas.</p>
+
+    <!-- Input de Teléfono con selector de país integrado -->
+    <div class="form-group">
+      <label for="phone-number">Número de celular</label>
+      <div class="input-phone">
+        <div class="prefix">
+          <select id="country-select" class="country-select">
+            <option value="+505" data-flag="🇳🇮">🇳🇮 +505</option>
+            <option value="+506" data-flag="🇨🇷">🇨🇷 +506</option>
+            <option value="+504" data-flag="🇭🇳">🇭🇳 +504</option>
+            <option value="+502" data-flag="🇬🇹">🇬🇹 +502</option>
+            <option value="+503" data-flag="🇸🇻">🇸🇻 +503</option>
+            <option value="+507" data-flag="🇵🇦">🇵🇦 +507</option>
+          </select>
+        </div>
+        <input type="tel" id="phone-number" placeholder="8888 8888" inputmode="numeric" autocomplete="tel" maxlength="9" pattern="[0-9 ]*">
+      </div>
+    </div>
+
+    <!-- Checkbox de Términos -->
+    <div class="terms-check custom-checkbox">
+      <input type="checkbox" id="terms" name="terms">
+      <label for="terms">
+        He leído y acepto los <a href="#" target="_blank" rel="noopener">Términos y Condiciones</a> y la <a href="#" target="_blank" rel="noopener">Política de Privacidad</a>.
+      </label>
+    </div>
+
+    <div class="onboarding-footer">
+      <button class="welcome-btn" id="phone-continue-btn" data-screen="2" disabled>Continuar →</button>
+    </div>
+  </div>
+</div>

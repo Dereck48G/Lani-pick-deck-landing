@@ -1,0 +1,124 @@
+<div class="screen" id="screen-home-admin">
+  <header>
+    <button class="header-icon" data-switch="toCashier" aria-label="Cambiar a Cajero" title="Ir a cajero">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani Logo" class="logo">
+    <div style="width:36px;"></div>
+  </header>
+
+  <main>
+    <!-- Encabezado con saludo + salud del negocio -->
+    <div class="home-header home-header--compact">
+      <div class="home-top">
+        <div>
+          <h1 id="admin-greeting">¡Hola, Ana!</h1>
+          <p class="sub">Así va tu negocio hoy</p>
+        </div>
+        <div class="health-pill" id="health-pill" title="Salud económica">
+          <span class="dot"></span>
+          <span id="health-text">Salud: 🟢 Saludable</span>
+        </div>
+      </div>
+
+      <!-- Leyenda de salud -->
+      <div class="health-legend">
+        <span>🟢 Saludable = Ventas cubren gastos + ganancias</span><br>
+        <span>🟡 Ajustada = Ventas apenas cubren gastos</span><br>
+        <span>🔴 Crítica = Pérdidas o deudas altas</span>
+      </div>
+
+      <!-- KPIs principales -->
+      <div class="kpi-strip">
+        <div class="kpi-card" data-screen="13" title="Ir a Ventas">
+          <div class="kpi-label">Ventas</div>
+          <div class="kpi-value" id="kpi-sales">C$ 0</div>
+          <div class="kpi-diff positive" id="kpi-sales-diff">▲ 0% vs ayer</div>
+        </div>
+        <div class="kpi-card" data-screen="14" title="Ir a Gastos">
+          <div class="kpi-label">Gastos</div>
+          <div class="kpi-value" id="kpi-expenses">C$ 0</div>
+          <div class="kpi-diff negative" id="kpi-expenses-diff">▼ 0% vs ayer</div>
+        </div>
+        <div class="kpi-card" data-screen="13" title="Ir a Ventas">
+          <div class="kpi-label">Resultado</div>
+          <div class="kpi-value" id="kpi-profit">C$ 0</div>
+          <div class="kpi-diff" id="kpi-profit-tag">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas accionables -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-title">⚠️ Necesita tu atención</div>
+      </div>
+
+      <div class="alerts-grid" id="alerts-grid">
+        <!-- Se llena dinámicamente desde admin.js -->
+      </div>
+    </div>
+
+    <!-- Gráfico de ventas -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-title">📊 Ventas últimos 7 días</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="ventasChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Sucursales & acceso rápido -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-title">🏬 Sucursales</div>
+        <button class="link-btn" id="add-branch">➕ Nueva sucursal</button>
+      </div>
+
+      <div class="branches-row" id="branches-row">
+        <!-- tarjetas sucursal renderizadas por JS -->
+      </div>
+    </div>
+
+    <!-- Atajos del ecosistema Lani -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-title">Crecimiento con Lani</div>
+      </div>
+      <div class="ecosystem-cards">
+        <div class="eco-card">
+          <div class="eco-icon">🛒</div>
+          <div class="eco-body">
+            <div class="eco-title">Marketplace</div>
+            <div class="eco-sub">Publica tus productos en un clic</div>
+          </div>
+          <button class="promo-button" data-screen="14">Configurar</button>
+        </div>
+        <div class="eco-card">
+          <div class="eco-icon">📣</div>
+          <div class="eco-body">
+            <div class="eco-title">Promos</div>
+            <div class="eco-sub">Activa campañas en redes</div>
+          </div>
+          <button class="promo-button" data-screen="14">Crear Promo</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" data-screen="10">🏠 <span>Inicio</span></div>
+    <div class="nav-item" data-screen="13">📊 <span>Ventas</span></div>
+    <div class="nav-item" data-screen="15">📦 <span>Productos</span></div>
+    <div class="nav-item" data-screen="11">🏬 <span>Sucursales</span></div>
+    <div class="nav-item" data-screen="11">📑 <span>Reportes</span></div>
+  </nav>
+</div>

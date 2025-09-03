@@ -1,0 +1,43 @@
+<div class="screen" id="screen-cash-flow">
+  <header>
+    <button class="header-icon go-back" aria-label="Atrás">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani Logo" class="logo">
+    <div style="width:36px;"></div>
+  </header>
+  <main>
+    <div class="cash-flow-form">
+      <h2 style="font-size:22px; font-weight:800; margin-bottom:16px;">Arqueo de Caja 1</h2>
+      <div class="toggle-switch">
+        <button class="toggle-btn active" data-flow="open">Abrir Caja</button>
+        <button class="toggle-btn" data-flow="close">Cerrar Caja</button>
+      </div>
+      <div id="open-box-form">
+        <div class="form-group"><label for="initial-cash">Monto inicial</label><input type="number" id="initial-cash" placeholder="C$ 0.00" inputmode="decimal"></div>
+        <div class="link-like" id="denomination-toggle">Contar por denominación</div>
+        <div id="denomination-counter" style="display:none; margin-top: 16px;">
+          <div class="denominations-grid">
+            <label>C$ 500</label><input type="number" data-value="500" placeholder="0" inputmode="numeric">
+            <label>C$ 100</label><input type="number" data-value="100" placeholder="0" inputmode="numeric">
+            <label>C$ 50</label><input type="number" data-value="50" placeholder="0" inputmode="numeric">
+          </div>
+        </div>
+        <button class="save-btn">Iniciar turno</button>
+      </div>
+      <div id="close-box-form" style="display:none;">
+        <div class="summary-box">
+          <div class="summary-row"><span>Monto Inicial</span><span>C$ 500.00</span></div>
+          <div class="summary-row"><span>Ventas en Efectivo</span><span>C$ 4,500.50</span></div>
+          <div class="summary-row"><span>Gastos en Efectivo</span><span>- C$ 150.00</span></div>
+          <div class="summary-row total"><span>Efectivo Esperado</span><span id="expected-cash">C$ 4,850.50</span></div>
+        </div>
+        <div class="form-group"><label for="counted-cash">Monto contado en caja</label><input type="number" id="counted-cash" placeholder="C$ 0.00" inputmode="decimal"></div>
+        <div class="summary-box">
+          <div class="summary-row difference-row"><span>Diferencia</span><span id="difference-cash" class="value">C$ 0.00</span></div>
+        </div>
+        <button class="save-btn" style="background:var(--danger-color);">Finalizar y cerrar caja</button>
+      </div>
+    </div>
+  </main>
+</div>

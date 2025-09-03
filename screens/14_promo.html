@@ -1,0 +1,35 @@
+<div class="screen" id="screen-promo">
+  <header>
+    <button class="header-icon go-back" aria-label="Atrás">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani Logo" class="logo">
+    <div style="width:36px;"></div>
+  </header>
+  <main>
+    <div class="promo-view">
+      <div class="promo-card">
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <img src="https://placehold.co/80x80/f3a649/4A4A4A?text=Caf%C3%A9" alt="Producto" style="width:80px;height:80px;border-radius:.5rem;">
+          <div>
+            <h1 style="font-size:18px; font-weight:800; color:#1e293b; margin:0">Promocionar Producto</h1>
+            <p style="color:#475569; font-size: 15px; margin: 4px 0 0;">Café Molido 500g</p>
+          </div>
+        </div>
+        <div style="margin-top:1.2rem;">
+          <label style="display:block; font-size:13px; font-weight:700; color:#334155; margin-bottom:.5rem;">1. Elige tu Impulso</label>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem;">
+            <div class="promo-plan" data-price="10"><h4>Básico</h4><p>C$10</p><p style="font-size:12px;color:var(--text-light)">1-2 días</p></div>
+            <div class="promo-plan selected" data-price="25"><h4>Recomendado</h4><p>C$25</p><p style="font-size:12px;color:var(--text-light)">3-5 días</p></div>
+            <div class="promo-plan" data-price="50"><h4>Avanzado</h4><p>C$50</p><p style="font-size:12px;color:var(--text-light)">7 días</p></div>
+          </div>
+        </div>
+        <div class="promo-summary">
+          <h3 style="font-weight:800; font-size:14px; margin:0 0 4px;">Esto es lo que obtienes:</h3>
+          <div id="promo-details"></div>
+        </div>
+        <button class="save-btn" id="launch-promo">Lanzar Promoción (C$ 25)</button>
+      </div>
+    </div>
+  </main>
+</div>
