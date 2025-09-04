@@ -13,7 +13,7 @@
     <div style="width:36px;"></div>
   </header>
 
-  <main>
+  <main style="padding-bottom:80px;"> <!-- espacio para que no tape el nav -->
     <!-- Encabezado con saludo + salud del negocio -->
     <div class="home-header home-header--compact">
       <div class="home-top">
@@ -59,7 +59,6 @@
       <div class="section-head">
         <div class="section-title">⚠️ Necesita tu atención</div>
       </div>
-
       <div class="alerts-grid" id="alerts-grid">
         <!-- Se llena dinámicamente desde admin.js -->
       </div>
@@ -75,13 +74,12 @@
       </div>
     </div>
 
-    <!-- Sucursales & acceso rápido -->
+    <!-- Sucursales -->
     <div class="section-block">
       <div class="section-head">
         <div class="section-title">🏬 Sucursales</div>
         <button class="link-btn" id="add-branch">➕ Nueva sucursal</button>
       </div>
-
       <div class="branches-row" id="branches-row">
         <!-- tarjetas sucursal renderizadas por JS -->
       </div>
@@ -90,31 +88,52 @@
     <!-- Atajos del ecosistema Lani -->
     <div class="section-block">
       <div class="section-head">
-        <div class="section-title">Crecimiento con Lani</div>
+        <div class="section-title">🚀 Crecimiento con Lani</div>
       </div>
-      <div class="ecosystem-cards">
-        <div class="eco-card">
-          <div class="eco-icon">🛒</div>
-          <div class="eco-body">
-            <div class="eco-title">Marketplace</div>
-            <div class="eco-sub">Publica tus productos en un clic</div>
+
+      <div class="branches-row" id="ecosystem-row">
+        <div class="branch-card" style="min-height:120px;">
+          <div class="content">
+            <div class="branch-header">
+              <span>🛒 Marketplace</span>
+              <button class="promo-button" data-screen="14">Configurar</button>
+            </div>
+            <div class="eco-stats">
+              <div class="stat-item">
+                <span class="label">Estado</span>
+                <span class="value">Inactivo</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Productos</span>
+                <span class="value">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Ventas</span>
+                <span class="value">—</span>
+              </div>
+            </div>
           </div>
-          <button class="promo-button" data-screen="14">Configurar</button>
         </div>
-        <div class="eco-card">
-          <div class="eco-icon">📣</div>
-          <div class="eco-body">
-            <div class="eco-title">Promos</div>
-            <div class="eco-sub">Activa campañas en redes</div>
+
+        <div class="branch-card" style="min-height:120px;">
+          <div class="content">
+            <div class="branch-header">
+              <span>📣 Promos</span>
+              <button class="promo-button" data-screen="14">Crear Promo</button>
+            </div>
+            <div class="eco-stats">
+              <div class="stat-item">
+                <span class="label">Campañas</span>
+                <span class="value">0</span>
+              </div>
+            </div>
           </div>
-          <button class="promo-button" data-screen="14">Crear Promo</button>
         </div>
       </div>
     </div>
-  </main>
-
-  <!-- Bottom nav -->
-  <nav class="bottom-nav">
+    
+  <!-- 👇 NAV SOLO EN ADMIN -->
+  <nav class="bottom-nav" id="bottom-nav">
     <div class="nav-item active" data-screen="10">🏠 <span>Inicio</span></div>
     <div class="nav-item" data-screen="13">📊 <span>Ventas</span></div>
     <div class="nav-item" data-screen="15">📦 <span>Productos</span></div>
@@ -122,3 +141,5 @@
     <div class="nav-item" data-screen="11">📑 <span>Reportes</span></div>
   </nav>
 </div>
+  </main>
+

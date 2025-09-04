@@ -1,87 +1,61 @@
-// navigation.js — Controla el carrusel de pantallas y el historial de navegación.
+// navigation.js — Manejo de pantallas
 
-let sliderWrapper;
-let appState;
 let currentScreen = 0;
 let navigationHistory = [];
+let sliderWrapper = null;
 
-/**
- * Obtiene todas las pantallas actuales en el DOM.
- */
-function getScreens() {
-    const screens = Array.from(document.querySelectorAll('.screen'));
-    return screens;
-}
-
-/**
- * Inicializa el módulo de navegación con el estado de la app.
- * Debe llamarse **después de cargar las pantallas** en el DOM.
- */
-export function initializeNavigation(state) {
+export function initializeNavigation() {
     sliderWrapper = document.querySelector('.slider-wrapper');
-    if (!sliderWrapper) {
-        console.error("No se encontró el contenedor .slider-wrapper");
-        return;
-    }
-
-    appState = state;
-
-    setupScreenSizes();
-    window.addEventListener('resize', setupScreenSizes);
-
-    // Delegación de eventos para todo el body
-    document.body.addEventListener('click', (e) => {
-        // Botones con data-screen
-        const screenTarget = e.target.closest('[data-screen]');
-        if (screenTarget) {
-            const idx = parseInt(screenTarget.dataset.screen, 10);
-            if (!isNaN(idx)) goToScreen(idx);
-            return;
-        }
-
-        // Botones de "Atrás"
-        const backTarget = e.target.closest('.go-back');
-        if (backTarget) {
-            e.preventDefault();
-            goBack();
-            return;
-        }
-
-        // Botones para cambiar entre Admin y Cajero
-        const switchTarget = e.target.closest('[data-switch]');
-        if (switchTarget) {
-            const mode = switchTarget.dataset.switch;
-            if (mode === 'toCashier') {
-                appState.isAdminView = false;
-                navigationHistory = [10]; // guarda home admin en historial
-                goToScreen(12);           // home cajero
-            } else if (mode === 'toAdmin') {
-                appState.isAdminView = true;
-                navigationHistory = [12]; // guarda home cajero en historial
-                goToScreen(10);           // home admin
-            }
-        }
-    });
-}
-
-/**
- * Ajusta el ancho del carrusel y de cada pantalla.
- */
-function setupScreenSizes() {
     if (!sliderWrapper) return;
+
     const screens = getScreens();
     if (!screens.length) return;
 
-    const numScreens = screens.length;
-    sliderWrapper.style.width = `${numScreens * 100}%`;
-    screens.forEach(s => {
-        s.style.width = `${100 / numScreens}%`;
+    // Colocar todas las pantallas en fila horizontal
+    sliderWrapper.style.display = 'flex';
+    sliderWrapper.style.transition = 'transform 0.3s ease-in-out';
+    sliderWrapper.style.width = `${screens.length * 100}%`;
+
+    screens.forEach(screen => {
+        screen.style.width = `${100 / screens.length}%`;
+        screen.style.flexShrink = '0';
+    });
+
+    goToScreen(0, false);
+
+    // Delegar clicks para navegación
+    document.body.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-screen], [data-switch]');
+        if (!target) return;
+
+        if (target.dataset.screen) {
+            goToScreen(Number(target.dataset.screen));
+        } else if (target.dataset.switch) {
+            handleSwitch(target.dataset.switch);
+        }
     });
 }
 
-/**
- * Mueve el carrusel a la pantalla indicada por su índice o id.
- */
+function getScreens() {
+    return Array.from(document.querySelectorAll('.screen'));
+}
+
+function handleSwitch(action) {
+    switch (action) {
+        case 'back':
+            goBack();
+            break;
+        case 'toCashier':
+            goToScreen('screen-home-cashier');
+            break;
+        case 'toAdmin':
+            goToScreen('screen-home-admin');
+            break;
+        default:
+            console.warn(`Acción desconocida: ${action}`);
+    }
+}
+
 export function goToScreen(target, pushToHistory = true) {
     const screens = getScreens();
     if (!screens.length) return;
@@ -106,18 +80,20 @@ export function goToScreen(target, pushToHistory = true) {
 
     const percentage = currentScreen * (100 / screens.length);
     sliderWrapper.style.transform = `translateX(-${percentage}%)`;
+
+    // 👇 Manejar visibilidad del bottom-nav solo en admin
+    const allBottomNavs = document.querySelectorAll('.bottom-nav');
+    allBottomNavs.forEach(nav => nav.style.display = 'none'); // ocultar todos
+
+    const currentNav = screens[currentScreen].querySelector('.bottom-nav');
+    if (currentNav) currentNav.style.display = 'flex';
 }
 
-/**
- * Regresa a la pantalla anterior en el historial.
- */
 export function goBack() {
-    if (navigationHistory.length > 0) {
-        const previousScreen = navigationHistory.pop();
-        goToScreen(previousScreen, false);
-    } else {
-        // Si no hay historial, regresa al home correcto
-        const homeScreen = appState.isAdminView ? 10 : 12;
-        goToScreen(homeScreen, false);
+    if (!navigationHistory.length) return;
+
+    const lastScreen = navigationHistory.pop();
+    if (lastScreen !== undefined) {
+        goToScreen(lastScreen, false);
     }
 }
