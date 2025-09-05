@@ -1,15 +1,35 @@
-<div class="screen" id="screen-product">
+<div class="screen" id="screen-products">
+
+  <!-- Header -->
   <header>
-    <button class="header-icon go-back" aria-label="Atrás">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <button class="header-icon" data-switch="toCashier" aria-label="Cambiar a Cajero" title="Ir a cajero">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
     </button>
-    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani Logo" class="logo">
-    <div style="width:36px;"></div>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
+         alt="Lani Logo" class="logo">
+    <button id="back-to-admin" class="header-icon" title="Volver al admin">🔙</button>
   </header>
+
+  <!-- Main -->
   <main>
-    <div class="form-view">
-      <h2 style="font-size:22px; font-weight:800;">Productos</h2>
-      <p class="helper">Aquí se mostrará la lista y gestión de productos.</p>
+    <div class="subcat-view">
+      <h2 id="products-title">Categorías de productos</h2>
+      <p class="helper">Selecciona una categoría para ver los productos disponibles.</p>
+
+      <!-- Contenedor tipo nav para categorías -->
+      <div id="categories-list" class="categories-nav"></div>
     </div>
   </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="nav-item" data-screen="screen-home-admin">🏠 <span>Inicio</span></div>
+    <div class="nav-item active" data-screen="screen-products">📦 <span>Productos</span></div>
+  </nav>
 </div>

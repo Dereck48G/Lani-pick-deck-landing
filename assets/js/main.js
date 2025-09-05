@@ -7,7 +7,7 @@ import { initializeOnboarding } from './onboarding.js';
 import { initializeCashier } from './cashier.js';
 import { initializePromo } from './promo.js';
 import { initializeAdmin } from './admin.js';
-
+import { initializeProducts } from './product.js';
 
 // Lista de todos los archivos HTML de las pantallas en el orden correcto.
 const screenFiles = [
@@ -22,6 +22,7 @@ const screenFiles = [
     'screen-setup.html',     // 8
     'screen-final.html',     // 9
     '06_home_admin.html',    // 10 
+    '11_product.html'         // 15
    // '07_branch_detail.html', // 11
    // '08_home_cashier.html',  // 12
 //    '09_cash_flow.html',     // 13
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeCashier();
     initializePromo();
       initializeAdmin(appState);
+          initializeProducts();
      // Inicializa setup solo si existen los elementos
     const setupScreenExists = document.getElementById('screen-setup');
     if (setupScreenExists) {

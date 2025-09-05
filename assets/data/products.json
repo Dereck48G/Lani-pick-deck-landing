@@ -1,0 +1,17 @@
+{
+  "categories": [
+    {"id": 1, "name": "Bebidas"},
+    {"id": 2, "name": "Snacks"},
+    {"id": 3, "name": "Lácteos"},
+    {"id": 4, "name": "Panadería"},
+    {"id": 5, "name": "Higiene"},
+    {"id": 6, "name": "Otros"}
+  ],
+  "products": [
+    {"id": 101, "categoryId": 1, "name": "Coca Cola 500ml", "available": 12, "image": "https://cdn-icons-png.flaticon.com/512/2748/2748558.png"},
+    {"id": 102, "categoryId": 1, "name": "Agua Mineral", "available": 30, "image": "https://cdn-icons-png.flaticon.com/512/2748/2748558.png"},
+    {"id": 103, "categoryId": 2, "name": "Papas Fritas", "available": 20, "image": "https://cdn-icons-png.flaticon.com/512/2748/2748558.png"},
+    {"id": 104, "categoryId": 3, "name": "Leche Entera", "available": 15, "image": "https://cdn-icons-png.flaticon.com/512/2748/2748558.png"},
+    {"id": 105, "categoryId": 4, "name": "Pan de Molde", "available": 25, "image": "https://cdn-icons-png.flaticon.com/512/2748/2748558.png"}
+  ]
+}

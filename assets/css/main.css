@@ -700,10 +700,9 @@ background: #fff;
   font-size: 1rem;
 }
 
-/* NAV */
-/* ====== Bottom Nav ====== */
-.bottom-nav {
-  position: fixed;
+/* ====== Bottom Nav SOLO para la pantalla admin ====== */
+#screen-home-admin .bottom-nav {
+  position: relative;   /* se queda dentro del simulador */
   bottom: 0;
   left: 0;
   right: 0;
@@ -716,7 +715,7 @@ background: #fff;
   z-index: 100;
 }
 
-.bottom-nav .nav-item {
+#screen-home-admin .bottom-nav .nav-item {
   flex: 1;
   text-align: center;
   font-size: 12px;
@@ -724,15 +723,11 @@ background: #fff;
   cursor: pointer;
 }
 
-.bottom-nav .nav-item svg {
-  display: block;
-  margin: 0 auto 2px;
-}
-
-.bottom-nav .nav-item.active {
-  color: var(--primary-color, #ff6600); /* Naranja LANI */
+#screen-home-admin .bottom-nav .nav-item.active {
+  color: var(--primary-color, #ff6600);
   font-weight: 600;
 }
+
 
 /* ====== Ecosystem Stats ====== */
 .eco-stats {
@@ -760,4 +755,36 @@ background: #fff;
   font-weight: 600;
   margin-top: 2px;
   color: var(--text-color, #333);
+}
+
+.categories-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+.category-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.category-card:hover {
+  transform: scale(1.02);
+}
+.category-card h3 {
+  margin: 0 0 5px;
+  color: var(--primary-color);
+}
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.product-card img {
+  max-width: 100px;
+  margin-bottom: 8px;
 }
