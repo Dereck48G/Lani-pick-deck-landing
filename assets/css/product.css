@@ -1,111 +1,73 @@
-/* Contenedor de categorías tipo nav horizontal */
-.categories-nav {
-  display: flex;
-  overflow-x: auto;
-  gap: 12px;
-  padding: 10px 0;
-  scrollbar-width: thin; /* Firefox */
-}
-.categories-nav::-webkit-scrollbar {
-  height: 6px;
-}
-.categories-nav::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.2);
-  border-radius: 3px;
-}
-.categories-nav::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* ============================================= */
+/* PRODUCTOS - Pantalla 11 */
+/* ============================================= */
+.screen { padding:10px; font-family:sans-serif; }
 
-/* Cada item de categoría */
-.category-item {
-  flex: 0 0 auto; /* No se encoja y ocupe ancho del contenido */
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+/* Header específico */
+header{
+  display: flex; align-items:center; justify-content:space-between; margin-bottom:15px;
 }
-.category-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-}
+.logo { height: 40px; }
 
-/* Header con nombre + botón ➕ dentro de item */
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ===== Accordion de productos ===== */
+.accordion-container, .products-accordion { width: 100%; }
+
+.accordion, .products-accordion .accordion-btn{
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
   padding: 12px 16px;
-  min-width: 160px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  border-bottom: 2px solid rgba(255,255,255,0.3);
-  transition: background 0.3s, transform 0.2s;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
   border-radius: 8px;
+  margin-bottom: 8px;
+  transition: background 0.3s;
 }
-.category-header:hover {
-  background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
-  transform: translateY(-1px);
-}
-
-/* Botón ➕ al lado derecho */
-.add-product-btn {
-  background: #fff;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.add-product-btn:hover {
-  background: var(--primary-color);
-  color: #fff;
-  border-color: var(--accent-color);
-  transform: scale(1.1);
+.accordion:hover, .accordion.active,
+.products-accordion .accordion-btn:hover,
+.products-accordion .accordion-btn.active{
+  background-color: var(--accent-color);
 }
 
-/* Contenedor de productos desplegables debajo del nav horizontal */
-.products-container {
-  padding: 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Tarjeta de producto */
-.product-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid #ddd;
+.panel, .products-accordion .panel{
+  display: none;
+  background-color: var(--light-bg);
   border-radius: 8px;
-  padding: 10px;
-  background: #fff;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.product-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.product-card img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-.product-card .product-info {
-  flex: 1;
+  padding: 10px 16px;
+  margin-bottom: 10px;
 }
 
-/* Productos y mensajes anteriores */
-.hidden { display: none; }
-.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 15px; margin-top: 10px; }
-#no-products-message { font-size: 14px; color: var(--secondary-color); margin-top: 16px; }
+/* Tarjetas de producto */
+.product-card{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 12px; margin-bottom:6px;
+  border:1px solid var(--accent-color);
+  border-radius:6px;
+  background:#fff;
+}
+.product-info strong { color: var(--secondary-color); }
+
+.add-product-btn{
+  background: var(--accent-color);
+  border:none; color:#fff; padding:5px 10px; border-radius:6px;
+  cursor:pointer; transition: background 0.3s;
+}
+.add-product-btn:hover{ background: var(--primary-color); }
+
+/* Mensaje de no hay productos */
+#no-products-message {
+  color: var(--secondary-color);
+  font-size: 14px;
+  margin-top: 10px;
+}
+.hidden { display:none; }
+
+/* Bottom nav de productos (independiente de main) */
+.bottom-nav{
+  display:flex; gap:15px; margin-top:15px;
+}
+.nav-item { cursor:pointer; }
+.nav-item.active span{ font-weight:bold; }

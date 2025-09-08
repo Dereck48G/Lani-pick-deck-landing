@@ -1,81 +1,69 @@
 import { goToScreen } from './navigation.js';
 
 let appData = { categories: [], products: [] };
-let filteredProducts = [];
 
 export async function initializeProducts() {
   const res = await fetch('assets/data/products.json');
   appData = await res.json();
-  renderCategoriesList();
-  setupEventListeners();
+  renderCategoriesAccordion();
 }
 
-// Renderiza lista de categorías tipo nav acordeón
-function renderCategoriesList() {
+// Renderiza categorías como accordion
+function renderCategoriesAccordion() {
   const container = document.getElementById('categories-list');
   container.innerHTML = '';
 
   appData.categories.forEach(cat => {
-    const div = document.createElement('div');
-    div.classList.add('category-item');
+    const acc = document.createElement('button');
+    acc.classList.add('accordion-btn');
+    acc.textContent = cat.name;
 
-    // Header con título + botón agregar producto
-    const header = document.createElement('div');
-    header.classList.add('category-header');
-    header.innerHTML = `
-      <span>${cat.name}</span>
-      <button class="add-product-btn" data-cat="${cat.id}">➕</button>
-    `;
-    div.appendChild(header);
+    const panel = document.createElement('div');
+    panel.classList.add('panel');
 
-    // Contenedor de productos (oculto inicialmente)
-    const productsContainer = document.createElement('div');
-    productsContainer.classList.add('products-container', 'hidden');
-    div.appendChild(productsContainer);
-
-    // Mostrar/ocultar productos al hacer click en header (no botón)
-    header.addEventListener('click', e => {
-      if (!e.target.classList.contains('add-product-btn')) {
-        productsContainer.classList.toggle('hidden');
-        renderProducts(cat.id, productsContainer);
+    acc.addEventListener('click', () => {
+      acc.classList.toggle('active');
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+      } else {
+        panel.style.display = 'block';
+        renderProducts(panel, cat.id);
       }
     });
 
-    // Click en botón ➕ agregar producto
-    header.querySelector('.add-product-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      alert(`Abrir pantalla para agregar producto en categoría: ${cat.name}`);
-    });
-
-    container.appendChild(div);
+    container.appendChild(acc);
+    container.appendChild(panel);
   });
 }
 
-// Renderiza productos en contenedor de categoría
-function renderProducts(categoryId, container) {
+// Renderiza productos dentro del panel
+function renderProducts(panel, categoryId) {
   const products = appData.products.filter(p => p.categoryId === categoryId);
-  container.innerHTML = '';
+  const msg = document.getElementById('no-products-message');
+
+  panel.innerHTML = '';
 
   if (products.length === 0) {
-    container.innerHTML = `<p style="color:var(--secondary-color); padding:10px;">No hay productos en esta categoría.</p>`;
+    msg.classList.remove('hidden');
     return;
+  } else {
+    msg.classList.add('hidden');
   }
 
   products.forEach(p => {
     const card = document.createElement('div');
     card.classList.add('product-card');
     card.innerHTML = `
-      <img src="${p.image || 'https://via.placeholder.com/100'}" alt="${p.name}">
       <div class="product-info">
         <strong>${p.name}</strong>
         <p>Disponible: ${p.available}</p>
       </div>
-      <button class="btn-secondary" onclick="alert('Agregar al inventario: ${p.name}')">Agregar</button>
+      <button class="add-product-btn" onclick="alert('Agregar al inventario: ${p.name}')">Agregar</button>
     `;
-    container.appendChild(card);
+    panel.appendChild(card);
   });
 }
 
-function setupEventListeners() {
-  document.getElementById('back-to-admin').addEventListener('click', () => goToScreen(10));
-}
+// Evento volver al admin
+const backBtn = document.getElementById('back-to-admin');
+if(backBtn) backBtn.addEventListener('click', () => goToScreen(10));
