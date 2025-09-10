@@ -8,7 +8,6 @@ export async function initializeProducts() {
   renderCategoriesAccordion();
 }
 
-// Renderiza categorías como accordion
 function renderCategoriesAccordion() {
   const container = document.getElementById('categories-list');
   container.innerHTML = '';
@@ -16,19 +15,29 @@ function renderCategoriesAccordion() {
   appData.categories.forEach(cat => {
     const acc = document.createElement('button');
     acc.classList.add('accordion-btn');
-    acc.textContent = cat.name;
+    acc.innerHTML = `<span>${cat.name}</span><button class="add-product-btn" style="margin-left:10px">+ Producto</button>`;
 
     const panel = document.createElement('div');
     panel.classList.add('panel');
 
-    acc.addEventListener('click', () => {
-      acc.classList.toggle('active');
-      if (panel.style.display === 'block') {
-        panel.style.display = 'none';
-      } else {
-        panel.style.display = 'block';
-        renderProducts(panel, cat.id);
+    // Render productos existentes
+    renderProducts(panel, cat.id);
+
+    // Toggle panel
+    acc.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') {
+        acc.classList.toggle('active');
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
       }
+    });
+
+    // Botón + Producto → pantalla 15
+    const addBtn = acc.querySelector('.add-product-btn');
+    addBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sessionStorage.setItem('newProductCategoryId', cat.id);
+      sessionStorage.setItem('newProductCategoryName', cat.name);
+      goToScreen(12);
     });
 
     container.appendChild(acc);
@@ -36,7 +45,6 @@ function renderCategoriesAccordion() {
   });
 }
 
-// Renderiza productos dentro del panel
 function renderProducts(panel, categoryId) {
   const products = appData.products.filter(p => p.categoryId === categoryId);
   const msg = document.getElementById('no-products-message');

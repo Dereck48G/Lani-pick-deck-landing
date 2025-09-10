@@ -1,15 +1,316 @@
-<div class="screen" id="screen-scanner">
+
+<div class="screen" id="screen-products">
+
   <header>
-    <button class="header-icon go-back" aria-label="Atrás">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani Logo" class="logo">
+    <button class="header-icon" data-switch="toAdmin" aria-label="Cambiar a Admin">🏢</button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" class="logo">
     <div style="width:36px;"></div>
   </header>
+
   <main>
-    <div class="scanner-view">
-      <h2 style="font-size:22px; font-weight:800;">Escanear Producto</h2>
-       <p class="helper">Aquí se activaría la cámara para escanear códigos de barra.</p>
+    <div class="slider-wrapper">
+      <!-- Pantalla 1: Escáner -->
+      <section class="subscreen" id="scanner-screen">
+        <div class="scanner-view">
+          <div class="scanner-box">
+            <div class="scanner-line"></div>
+            <p>Apunta al código de barras</p>
+          </div>
+          <button class="scan-btn" id="scanButton">Simular Escaneo</button>
+
+          <div class="product-found hidden" id="productFound">
+            <div class="product-info">
+              <img id="productImage" src="https://placehold.co/120x120/F2A649/fff?text=Producto" alt="Producto Escaneado">
+              <div class="product-details">
+                <h3 id="productName">Café Molido 500g</h3>
+                <p id="productPrice">C$ 150.00</p>
+              </div>
+            </div>
+
+            <div class="quantity-control">
+              <label>Cantidad</label>
+              <div class="quantity-buttons">
+                <button class="qty-btn" id="decreaseQty">-</button>
+                <span id="quantity">1</span>
+                <button class="qty-btn" id="increaseQty">+</button>
+              </div>
+            </div>
+
+            <button class="add-product-btn" id="addToCart">Agregar a la Venta</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pantalla 2: Factura -->
+      <section class="subscreen" id="invoice-screen">
+        <h2>Resumen de Venta</h2>
+        <div id="cartItemsContainer"></div>
+        <div class="invoice-summary">
+          <div class="summary-row"><span>Subtotal</span><span id="subtotal">C$ 0.00</span></div>
+          <div class="summary-row"><span>IVA (15%)</span><span id="tax">C$ 0.00</span></div>
+          <div class="summary-row total"><span>Total a Pagar</span><span id="total">C$ 0.00</span></div>
+        </div>
+
+        <div class="payment-method">
+          <h3>Método de Pago</h3>
+          <div class="payment-options">
+            <div class="payment-option selected" data-method="Efectivo">Efectivo</div>
+            <div class="payment-option" data-method="Tarjeta">Tarjeta</div>
+            <div class="payment-option" data-method="Transferencia">Transferencia</div>
+          </div>
+        </div>
+
+        <button class="add-product-btn" id="registerSaleButton">Registrar Venta</button>
+      </section>
+
+      <!-- Pantalla 3: Recibo -->
+      <section class="subscreen" id="receipt-screen">
+        <div id="receipt-content" style="padding:10px; background:#f9f9f9; border-radius:8px; height:80%; overflow-y:auto; font-family: monospace;"></div>
+        <button class="add-product-btn" id="printButton">Imprimir</button>
+        <button class="add-product-btn" id="closeReceiptButton">Cerrar</button>
+      </section>
     </div>
   </main>
+
 </div>
+
+ <style>
+       
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .slider-wrapper {
+            display: flex;
+            width: 300%; /* Aumentado para 3 pantallas */
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .screen {
+            width: 33.333%; /* Ajustado para 3 pantallas */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: var(--bg-app);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        header .logo {
+            height: 30px;
+            width: auto;
+        }
+        .header-icon {
+            background: none; border: none; padding: 0; cursor: pointer;
+        }
+        .subscreen {
+                      width: 33.333%; /* Ajustado para 3 pantallas */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        /* --- Pantalla 1: Escáner --- */
+        .scanner-view { padding: 25px; text-align: center; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+        .scanner-box { width: 100%; height: 200px; background-color: #000; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-direction: column; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .scanner-line { position: absolute; left: 0; top: 0; width: 100%; height: 3px; background: #059669; box-shadow: 0 0 10px #059669; animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .scan-btn { padding: 12px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .product-found { background-color: white; border-radius: 12px; padding: 20px; text-align: left; border: 1px solid var(--border-color); display: none; }
+        .product-info { display: flex; gap: 15px; align-items: center; }
+        .product-info img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background-color: var(--bg-light); }
+        .product-details h3 { margin: 0; font-size: 18px; }
+        .product-details p { margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: var(--primary-color); }
+        .quantity-control { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+        .quantity-control label { font-weight: 500; color: var(--secondary-color); }
+        .quantity-buttons { display: flex; align-items: center; gap: 10px; }
+        .qty-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-color); background-color: white; font-size: 20px; font-weight: 600; cursor: pointer; color: var(--secondary-color); }
+        #quantity { font-size: 18px; font-weight: 600; min-width: 20px; text-align: center; }
+        .add-to-cart-btn { width: 100%; padding: 16px; background-color: var(--secondary-color); color: white; font-weight: 600; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; margin-top: 20px; }
+
+        /* --- Pantalla 2: Factura --- */
+        .invoice-header { padding: 20px; border-bottom: 1px solid var(--border-color); background-color: white; }
+        .invoice-header h2 { font-size: 20px; margin: 0; text-align: left; }
+        .cart-items { padding: 0 20px; flex-grow: 1; }
+        .cart-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-details .name { font-weight: 600; }
+        .cart-item-details .price-qty { color: var(--text-light); font-size: 14px; }
+        .cart-item-total { font-weight: 600; font-size: 16px; }
+        .remove-item-btn { background: none; border: none; cursor: pointer; color: var(--text-light); margin-left: 15px; }
+        .remove-item-btn:hover { color: var(--danger-color); }
+        .invoice-footer-container { flex-shrink: 0; }
+        .invoice-summary { padding: 20px; background-color: white; border-top: 1px solid var(--border-color); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+        .summary-row.total { font-weight: 700; font-size: 20px; margin-top: 15px; padding-top: 15px; border-top: 2px solid var(--text-dark); }
+        .payment-method { padding: 20px; background-color: white; border-top: 1px solid var(--border-color); }
+        .payment-method h3 { font-size: 16px; margin: 0 0 15px 0; font-weight: 600; }
+        .payment-options { display: flex; gap: 10px; }
+        .payment-option { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center; cursor: pointer; font-weight: 500; transition: all 0.2s ease; }
+        .payment-option.selected { background-color: var(--bg-light); border-color: var(--primary-color); color: var(--primary-color); font-weight: 600; }
+        .invoice-footer { padding: 20px; background-color: white; border-top: 1px solid var(--border-color); }
+        .register-sale-btn { width: 100%; padding: 16px; background-color: var(--primary-color); color: white; font-weight: 600; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; }
+        .add-more-btn { width: 100%; padding: 14px; background: none; color: var(--primary-color); font-weight: 600; font-size: 16px; border-radius: 8px; border: 1px solid var(--primary-color); cursor: pointer; margin-bottom: 10px; }
+
+        /* --- Pantalla 3: Recibo --- */
+        .receipt-view { padding: 20px; background-color: white; height: 100%; box-sizing: border-box; }
+        #receipt-content {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            height: 80%;
+            overflow-y: auto;
+        }
+        .receipt-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .receipt-actions button {
+            flex: 1;
+            padding: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        #printButton { background-color: var(--secondary-color); color: white; }
+        #closeReceiptButton { background-color: var(--bg-light); color: var(--secondary-color); border: 1px solid var(--border-color); }
+
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-content, #receipt-content * { visibility: visible; }
+            #receipt-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-size: 10pt;
+                border: none;
+                background: none;
+                padding: 0;
+            }
+        }
+    </style>
+    
+<script type="module">
+  const sliderWrapper = document.querySelector('.slider-wrapper');
+  const scanButton = document.getElementById('scanButton');
+  const productFoundDiv = document.getElementById('productFound');
+  const addToCartButton = document.getElementById('addToCart');
+  const addMoreButton = document.getElementById('addMoreButton');
+  const decreaseQtyBtn = document.getElementById('decreaseQty');
+  const increaseQtyBtn = document.getElementById('increaseQty');
+  const quantitySpan = document.getElementById('quantity');
+  const cartItemsContainer = document.getElementById('cartItemsContainer');
+  const subtotalEl = document.getElementById('subtotal');
+  const taxEl = document.getElementById('tax');
+  const totalEl = document.getElementById('total');
+  const paymentOptions = document.querySelectorAll('.payment-option');
+  const registerSaleButton = document.getElementById('registerSaleButton');
+  const receiptContent = document.getElementById('receipt-content');
+  const printButton = document.getElementById('printButton');
+  const closeReceiptButton = document.getElementById('closeReceiptButton');
+
+  let currentQuantity = 1;
+  let cart = [];
+  const TAX_RATE = 0.15;
+  let invoiceCounter = 1;
+
+  // --- Escáner ---
+  scanButton.addEventListener('click', () => {
+    productFoundDiv.classList.remove('hidden');
+    scanButton.style.display = 'none';
+  });
+  increaseQtyBtn.addEventListener('click', () => { currentQuantity++; quantitySpan.textContent = currentQuantity; });
+  decreaseQtyBtn.addEventListener('click', () => { if(currentQuantity>1){ currentQuantity--; quantitySpan.textContent=currentQuantity;} });
+
+  addToCartButton.addEventListener('click', () => {
+    cart.push({ id: Date.now(), name:'Café Molido 500g', price:150, quantity:currentQuantity });
+    updateInvoice();
+    goToInvoiceScreen();
+    resetScanner();
+  });
+
+  function resetScanner(){
+    productFoundDiv.classList.add('hidden');
+    scanButton.style.display = 'block';
+    currentQuantity = 1;
+    quantitySpan.textContent='1';
+  }
+
+  // --- Factura ---
+  function updateInvoice(){
+    cartItemsContainer.innerHTML = '';
+    let subtotal = 0;
+    if(cart.length===0){
+      cartItemsContainer.innerHTML='<p>No hay productos en el carrito</p>';
+    }
+    cart.forEach(item=>{
+      const itemTotal = item.price*item.quantity;
+      subtotal+=itemTotal;
+      const div = document.createElement('div');
+      div.innerHTML=`${item.name} x ${item.quantity} = C$ ${itemTotal.toFixed(2)}`;
+      cartItemsContainer.appendChild(div);
+    });
+    const tax=subtotal*TAX_RATE;
+    const total=subtotal+tax;
+    subtotalEl.textContent=`C$ ${subtotal.toFixed(2)}`;
+    taxEl.textContent=`C$ ${tax.toFixed(2)}`;
+    totalEl.textContent=`C$ ${total.toFixed(2)}`;
+  }
+
+  paymentOptions.forEach(option=>option.addEventListener('click', ()=>{
+    paymentOptions.forEach(o=>o.classList.remove('selected'));
+    option.classList.add('selected');
+  }));
+
+  // --- Recibo ---
+  registerSaleButton.addEventListener('click', ()=>{
+    if(cart.length>0){ generateReceipt(); goToReceiptScreen(); } else { alert("Agrega al menos un producto"); }
+  });
+
+  function generateReceipt(){
+    const now = new Date();
+    const date = now.toLocaleDateString('es-NI');
+    const time = now.toLocaleTimeString('es-NI');
+    const subtotal = cart.reduce((acc,i)=>acc+i.price*i.quantity,0);
+    const tax=subtotal*TAX_RATE;
+    const total=subtotal+tax;
+    let receipt=`FACTURA #${invoiceCounter}\nFecha: ${date} ${time}\n----------------------------\n`;
+    cart.forEach(item=>{
+      receipt+=`${item.quantity} x ${item.name} = C$ ${(item.price*item.quantity).toFixed(2)}\n`;
+    });
+    receipt+=`----------------------------\nSubtotal: C$ ${subtotal.toFixed(2)}\nIVA 15%: C$ ${tax.toFixed(2)}\nTOTAL: C$ ${total.toFixed(2)}\n`;
+    receiptContent.textContent=receipt;
+  }
+
+  printButton.addEventListener('click', ()=>window.print());
+  closeReceiptButton.addEventListener('click', ()=>{
+    cart=[]; invoiceCounter++; updateInvoice(); goToScannerScreen();
+  });
+
+  // --- Navegación entre subscreens ---
+  function goToScreen(index){ sliderWrapper.style.transform=`translateX(-${index*100}%)`; }
+  const goToScannerScreen=()=>goToScreen(0);
+  const goToInvoiceScreen=()=>goToScreen(1);
+  const goToReceiptScreen=()=>goToScreen(2);
+</script>

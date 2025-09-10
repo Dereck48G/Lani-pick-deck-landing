@@ -1,8 +1,8 @@
 <style>
 :root{
-  --primary-color: #F2A649;   /* Naranja Lani */
-  --accent-color:  #58B4E9;   /* Azul Lani */
-  --secondary-color:#4A4A4A;  /* Gris Oscuro */
+  --primary-color: #F2A649;
+  --accent-color:  #58B4E9;
+  --secondary-color:#4A4A4A;
   --light-bg: #f9f9f9;
 }
 
@@ -33,7 +33,7 @@ header{
 }
 
 /* Accordion general */
-.accordion, .products-accordion .accordion-btn {
+.accordion-btn {
   background-color: var(--primary-color);
   color: #fff;
   cursor: pointer;
@@ -48,14 +48,10 @@ header{
   transition: background 0.3s;
   display: flex; justify-content: space-between; align-items: center;
 }
-.accordion:hover, .accordion.active,
-.products-accordion .accordion-btn:hover,
-.products-accordion .accordion-btn.active {
-  background-color: var(--accent-color);
-}
+.accordion-btn:hover, .accordion-btn.active { background-color: var(--accent-color); }
 
 /* Panel dentro del accordion */
-.panel, .products-accordion .panel {
+.panel {
   display: none;
   background-color: var(--light-bg);
   border-radius: 8px;
@@ -80,11 +76,7 @@ header{
 .add-product-btn:hover{ background: var(--primary-color); }
 
 /* Mensaje cuando no hay productos */
-#no-products-message {
-  color: var(--secondary-color);
-  font-size: 14px;
-  margin-top: 10px;
-}
+#no-products-message { color: var(--secondary-color); font-size: 14px; margin-top: 10px; }
 .hidden { display:none; }
 
 /* Bottom nav */
@@ -99,141 +91,34 @@ header{
 
   <!-- Header -->
   <header>
-    <button class="header-icon" data-switch="toCashier" aria-label="Cambiar a Cajero" title="Ir a cajero">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-    </button>
-    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" 
-         alt="Lani Logo" class="logo">
+    <button class="header-icon" data-switch="toCashier" aria-label="Cambiar a Cajero" title="Ir a cajero">📟</button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" class="logo">
     <button id="back-to-admin" class="header-icon" title="Volver al admin">🔙</button>
   </header>
 
-  <!-- Main -->
   <main>
     <h2>
       Categorías de productos
       <button id="add-category-btn">+ Agregar Categoría</button>
     </h2>
 
-    <!-- Buscador -->
     <input type="text" id="product-search" placeholder="Buscar productos...">
 
-    <!-- Accordion dinámico de categorías -->
-    <div id="categories-list" class="products-accordion"></div>
+    <div id="categories-list"></div>
 
-    <!-- Mensaje cuando no hay productos -->
     <p id="no-products-message" class="hidden">No hay productos en esta categoría.</p>
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <div class="nav-item" data-screen="10">🏠 <span>Inicio</span></div>
-    <div class="nav-item" data-screen="13">📊 <span>Ventas</span></div>
-    <div class="nav-item" data-screen="11">📦 <span>Productos</span></div>
-    <div class="nav-item" data-screen="0">🏬 <span>Sucursales</span></div>
-    <div class="nav-item" data-screen="11">📑 <span>Reportes</span></div>
+  <nav class="bottom-nav">
+    <div class="nav-item" data-screen="10">🏠 Inicio</div>
+    <div class="nav-item" data-screen="13">📊 Ventas</div>
+    <div class="nav-item" data-screen="11">📦 Productos</div>
+    <div class="nav-item" data-screen="0">🏬 Sucursales</div>
+    <div class="nav-item" data-screen="11">📑 Reportes</div>
   </nav>
 </div>
 
 <script type="module">
-import { goToScreen } from './navigation.js';
-
-let appData = { categories: [], products: [] };
-let filteredProducts = [];
-
-// Inicialización
-export async function initializeProducts() {
-  const res = await fetch('assets/data/products.json');
-  appData = await res.json();
-  filteredProducts = appData.products;
-  renderCategoriesAccordion();
-}
-
-// Renderiza categorías con botones + producto
-function renderCategoriesAccordion() {
-  const container = document.getElementById('categories-list');
-  container.innerHTML = '';
-
-  appData.categories.forEach(cat => {
-    const acc = document.createElement('button');
-    acc.classList.add('accordion-btn');
-    acc.innerHTML = `<span>${cat.name}</span><button class="add-product-btn" style="margin-left:10px">+ Producto</button>`;
-
-    const panel = document.createElement('div');
-    panel.classList.add('panel');
-
-    // Click para abrir/cerrar y renderizar productos
-    acc.addEventListener('click', (e) => {
-      if(e.target.tagName !== 'BUTTON'){ // Ignora el click en "+ Producto"
-        acc.classList.toggle('active');
-        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-        renderProducts(panel, cat.id);
-      }
-    });
-
-    // Click en "+ Producto"
-    acc.querySelector('.add-product-btn').addEventListener('click', () => {
-      alert(`Agregar nuevo producto a categoría: ${cat.name}`);
-    });
-
-    container.appendChild(acc);
-    container.appendChild(panel);
-  });
-}
-
-// Renderiza productos dentro del panel según categoría y filtro
-function renderProducts(panel, categoryId) {
-  const products = filteredProducts.filter(p => p.categoryId === categoryId);
-  const msg = document.getElementById('no-products-message');
-  panel.innerHTML = '';
-
-  if(products.length === 0) {
-    msg.classList.remove('hidden');
-    return;
-  } else {
-    msg.classList.add('hidden');
-  }
-
-  products.forEach(p => {
-    const card = document.createElement('div');
-    card.classList.add('product-card');
-    card.innerHTML = `
-      <div class="product-info">
-        <strong>${p.name}</strong>
-        <p>Disponible: ${p.available}</p>
-      </div>
-      <button class="add-product-btn" onclick="alert('Agregar al inventario: ${p.name}')">Agregar</button>
-    `;
-    panel.appendChild(card);
-  });
-}
-
-// Buscador dinámico
-const searchInput = document.getElementById('product-search');
-searchInput.addEventListener('input', (e) => {
-  const term = e.target.value.toLowerCase();
-  filteredProducts = appData.products.filter(p => p.name.toLowerCase().includes(term));
-  renderCategoriesAccordion();
-});
-
-// Botón agregar categoría
-document.getElementById('add-category-btn').addEventListener('click', () => {
-  alert('Agregar nueva categoría');
-});
-
-// Evento volver al admin
-const backBtn = document.getElementById('back-to-admin');
-if(backBtn) backBtn.addEventListener('click', () => goToScreen(10));
-
-// Bottom nav click
-document.querySelectorAll('#bottom-nav .nav-item').forEach(nav => {
-  nav.addEventListener('click', () => {
-    goToScreen(Number(nav.dataset.screen));
-  });
-});
+import { initializeProducts } from '../assets/js/product.js';
+initializeProducts();
 </script>

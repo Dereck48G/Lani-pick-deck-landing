@@ -1,71 +1,123 @@
-<!--  
 <div class="screen" id="screen-home-cashier">
   <header>
-    <button class="header-icon" data-switch="toAdmin" aria-label="Cambiar a Admin">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    </button>
-    <img
-      src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png"
+    <button class="header-icon" data-switch="toAdmin" aria-label="Cambiar a Admin">🏢</button>
+    <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" class="logo">
     <div style="width:36px;"></div>
   </header>
+
   <main>
-    <div class="home-header">
+    <!-- Saludo y resumen del turno -->
+    <div >
       <h1>¡Hola, Carlos! (Cajero)</h1>
-      <p>Tu resumen de hoy en Caja 1</p>
+      <p>Operando en: <strong>Caja 1 (Sucursal Principal)</strong></p>
       <div class="dashboard">
-        <div class="dash-card">
+        <div class="dash-card ingresos">
           <div class="value">C$ 4,500</div>
           <div class="label">Ingresos</div>
         </div>
-        <div class="dash-card">
+        <div class="dash-card egresos">
           <div class="value">C$ 150</div>
           <div class="label">Egresos</div>
         </div>
-        <div class="dash-card">
-          <div class="value">C$ 10</div>
-          <div class="label">Sobrante</div>
+        <div class="dash-card efectivo">
+          <div class="value">C$ 4,350</div>
+          <div class="label">Efectivo en Gaveta</div>
         </div>
       </div>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; padding:22px; gap:12px;">
-      <div class="action-card" data-screen="12"
-        style="padding:14px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="1" x2="12" y2="23" />
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg> Registrar Venta
+
+    <!-- Acciones principales -->
+    <div class="actions-grid">
+      <div class="action-card main" data-screen="14">
+        <span class="icon">💵</span>
+        <span class="text">Registrar Venta</span>
       </div>
-      <div class="action-card" data-screen="10"
-        style="padding:14px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <line x1="5" y1="12" x2="19" y2="12" />
-        </svg> Registrar Gasto
+      <div class="action-card" data-screen="14">
+        <span class="icon">💸</span>
+        <span class="text">Registrar Gasto</span>
       </div>
-      <div class="action-card" data-screen="9"
-        style="grid-column:1/-1; padding:14px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path
-            d="M12 20v-6M12 8V2M4 12H2M10 12H4M16 12h-4M22 12h-4M18 18l-1.5-1.5M18 6l-1.5 1.5M6 18l1.5-1.5M6 6l1.5 1.5" />
-        </svg> Abrir / Cerrar Caja
+      <div class="action-card" data-screen="9">
+        <span class="icon">🗃️</span>
+        <span class="text">Abrir / Cerrar Caja</span>
       </div>
     </div>
+
+    <!-- Historial últimas transacciones (estáticas) -->
+    <section class="recent-transactions">
+      <h2>Últimas Transacciones</h2>
+      <ul id="transactions-list">
+        <li class="transaction-entry">
+          <span><span class="transaction-icon">💵</span>Venta Cliente 001</span>
+          <span>C$ 1,200</span>
+        </li>
+        <li class="transaction-exit">
+          <span><span class="transaction-icon">💸</span>Pago Proveedor</span>
+          <span>C$ 150</span>
+        </li>
+        <li class="transaction-entry">
+          <span><span class="transaction-icon">💵</span>Venta Cliente 002</span>
+          <span>C$ 900</span>
+        </li>
+        <li class="transaction-entry">
+          <span><span class="transaction-icon">💵</span>Venta Cliente 003</span>
+          <span>C$ 800</span>
+        </li>
+        <li class="transaction-exit">
+          <span><span class="transaction-icon">💸</span>Retiro de Caja</span>
+          <span>C$ 1,000</span>
+        </li>
+      </ul>
+    </section>
   </main>
+
   <nav class="bottom-nav">
-    <div class="nav-item active" data-screen="8"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg><span>Inicio</span></div>
+    <div class="nav-item active" data-screen="8">🏠 <span>Inicio</span></div>
   </nav>
 </div>
--->
+
+<style>
+/* --- Variables y Estilos --- */
+.screen { padding:10px; font-family:sans-serif; background:#f9f9f9; }
+.logo { height:40px; }
+header { display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
+
+.home-header h1 { font-size:18px; margin-bottom:4px; }
+.home-header p { font-size:14px; margin-bottom:10px; color:#4A4A4A; }
+
+.dashboard { display:flex; gap:12px; margin-bottom:20px; }
+.dash-card { flex:1; padding:12px; border-radius:12px; color:#fff; text-align:center; }
+.dash-card .value { font-size:18px; font-weight:700; }
+.dash-card .label { font-size:12px; margin-top:4px; }
+
+.dash-card.ingresos { background-color: #58B4E9; }
+.dash-card.egresos { background-color: #F26349; }
+.dash-card.efectivo { background-color: #F2A649; }
+
+.actions-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.action-card { background:#fff; border-radius:12px; padding:16px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:0.3s; gap:6px; }
+.action-card:hover { transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,0.15); }
+.action-card.main { grid-column:1/-1; font-size:18px; font-weight:600; background:#F2A649; color:#fff; }
+.action-card.main:hover { background:#58B4E9; }
+
+.action-card .icon { font-size:28px; }
+.action-card .text { display:block; font-size:14px; font-weight:500; }
+
+.recent-transactions h2 { font-size:16px; margin-bottom:8px; color:#4A4A4A; }
+#transactions-list { list-style:none; padding:0; margin:0; }
+#transactions-list li { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; margin-bottom:6px; border-radius:8px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; }
+.transaction-entry { border-left:4px solid #28a745; padding-left:8px; color:#28a745; }
+.transaction-exit { border-left:4px solid #dc3545; padding-left:8px; color:#dc3545; }
+.transaction-icon { margin-right:8px; font-size:16px; }
+</style>
+
+<script type="module">
+import { goToScreen } from './navigation.js';
+
+// Botones acciones
+document.querySelectorAll('.action-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const target = card.dataset.screen;
+    if (target) goToScreen(Number(target));
+  });
+});
+</script>

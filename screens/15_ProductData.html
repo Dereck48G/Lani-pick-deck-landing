@@ -1,0 +1,232 @@
+<style>
+  .screen {
+    padding: 10px;
+    font-family: sans-serif;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+
+  main {
+    padding: 10px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #4A4A4A;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #4A4A4A;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #58B4E9;
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: #F2A649;
+  }
+
+  .save-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #F2A649;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+
+  .save-btn:hover {
+    background-color: #58B4E9;
+  }
+
+  .bottom-nav {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .nav-item {
+    cursor: pointer;
+  }
+
+  .nav-item.active span {
+    font-weight: bold;
+  }
+
+  .barcode-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--text-light);
+  }
+
+  .barcode-btn:hover {
+    color: var(--primary-color);
+  }
+
+  .image-uploader {
+    width: 120px;
+    height: 120px;
+    background-color: var(--input-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-light);
+    margin: 0 auto 20px auto;
+  }
+
+  .image-uploader:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+
+  .image-uploader span {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .price-cost-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .barcode-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--text-light);
+  }
+
+  .barcode-btn:hover {
+    color: var(--primary-color);
+  }
+</style>
+
+<div class="screen" id="screen-product-data">
+  <header>
+    <button id="back-to-products" class="header-icon">🔙</button>
+    <img
+      src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png"
+      class="logo">
+    <div style="width:24px;"></div>
+  </header>
+
+  <main>
+    <h2>Registrar Producto</h2>
+    <div class="image-uploader">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <span>Añadir Foto</span>
+    </div>
+
+    <div class="form-group">
+      <label for="product-name">Nombre del Producto</label>
+      <input type="text" id="product-name" placeholder="Ej: Café Molido 500g">
+    </div>
+   <div class="form-group">
+     <label for="sku">SKU / Código de Barras</label>
+      <input type="text" id="sku" placeholder="Escanear o ingresar código">
+             
+    </div>
+
+   
+   
+    <div class="price-cost-grid">
+      <div class="form-group">
+        <label for="price">Precio (Venta)</label>
+        <input type="number" id="price" placeholder="C$ 150.00">
+      </div>
+      <div class="form-group">
+        <label for="cost">Costo (Compra)</label>
+        <input type="number" id="cost" placeholder="C$ 95.00">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <select id="category">
+        <option value="">Seleccionar categoría</option>
+        <option value="abarrotes">Abarrotes</option>
+        <option value="bebidas">Bebidas</option>
+        <option value="limpieza">Limpieza</option>
+        <option value="cuidado-personal">Cuidado Personal</option>
+      </select>
+    </div>
+
+
+    <button id="save-product-btn" class="save-btn">Guardar Producto</button>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-item" data-screen="10">🏠 Inicio</div>
+    <div class="nav-item" data-screen="11">📦 Productos</div>
+  </nav>
+</div>
+
+<script type="module">
+  import { goToScreen } from './navigation.js';
+
+  document.getElementById('category').value = sessionStorage.getItem('newProductCategoryName') || '';
+
+  document.getElementById('back-to-products').addEventListener('click', () => goToScreen(11));
+
+  document.getElementById('save-product-btn').addEventListener('click', () => {
+    alert(`Producto ${document.getElementById('product-name').value} guardado correctamente`);
+    goToScreen(11);
+  });
+</script>

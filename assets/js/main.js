@@ -22,13 +22,14 @@ const screenFiles = [
     'screen-setup.html',     // 8
     'screen-final.html',     // 9
     '06_home_admin.html',    // 10 
-    '11_product.html'         // 15
+    '11_product.html'   ,      // 11
+    '15_ProductData.html',    // 12 → nueva pantalla de registro de producto
    // '07_branch_detail.html', // 11
-   // '08_home_cashier.html',  // 12
+    '08_home_cashier.html',  // 13
 //    '09_cash_flow.html',     // 13
   //  '10_expense.html',       // 14
 //    '11_product.html',       // 15
-//    '12_scanner.html',       // 16
+     '12_scanner.html'       // 14
 //    '13_invoice.html',       // 17
 //    '14_promo.html'          // 18
 ];

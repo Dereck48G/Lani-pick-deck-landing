@@ -157,10 +157,10 @@ if (branchesRow) {
   const alertsGrid = document.getElementById('alerts-grid');
   if (alertsGrid) {
     const alertsSummary = [
-      { icon:'⚠️', title:'Stock bajo', count:3, action:{label:'Ver lista', screen:15} },
+      { icon:'📦', title:'Inventario Bajo', count:3, action:{label:'Ver lista', screen:15} },
       { icon:'⏳', title:'Por vencer', count:2, action:{label:'Revisar', screen:15} },
-      { icon:'💸', title:'Por pagar',  count:1, action:{label:'Pagar', screen:14} },
-      { icon:'🧾', title:'Por cobrar', count:2, action:{label:'Cobrar', screen:13} },
+      { icon:'💸', title:'Cuentas por pagar',  count:1, action:{label:'Pagar', screen:14} },
+      { icon:'🗓️', title:'Cuentas por Cobrar Vencidas', count:2, action:{label:'Cobrar', screen:13} },
       { icon:'🧾', title:'Pedidos Pendintes', count:2, action:{label:'Pedidos', screen:13} },
     ];
     alertsGrid.innerHTML = alertsSummary.map(a => `
