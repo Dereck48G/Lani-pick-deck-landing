@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lani — Wireframe Marketplace (Explora por Categorías)</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --lani-primary: #6B8E23;
+      --lani-secondary: #B8860B;
+      --lani-bg: #F5F5DC;
+      --lani-text: #333333;
+    }
+    body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--lani-bg); color: var(--lani-text); }
+    .product-card { transition: transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    /* héroe más claro en móvil */
+    .hero-gradient { background: linear-gradient(135deg, rgba(184,134,11,0.95) 0%, rgba(107,142,35,0.95) 100%); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="bg-white shadow sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+      <div class="flex items-center gap-3">
+        <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" alt="Lani" class="h-10">
+        <span class="font-bold text-2xl text-[var(--lani-primary)]">Lani</span>
+      </div>
+
+      <div class="w-full md:w-2/4 relative">
+        <input id="searchInput" type="text" placeholder="Busca productos, servicios o tiendas..." class="w-full rounded-full border border-gray-300 py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--lani-secondary)]">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+
+      <nav class="flex items-center gap-3 ml-auto">
+        <a href="#categorias" class="text-gray-700 hover:text-[var(--lani-primary)] font-medium hidden md:inline">Categorías</a>
+        <a href="#confianza" class="text-gray-700 hover:text-[var(--lani-primary)] font-medium hidden md:inline">Seguridad</a>
+        <button id="carritoBtn" class="bg-[var(--lani-primary)] text-white px-4 py-2 rounded-full shadow hover:bg-[var(--lani-secondary)]">Carrito 🛒 <span id="cartCount" class="ml-2 bg-white text-[var(--lani-primary)] rounded-full px-2 py-0.5 text-xs">0</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- HERO -->
+    <section class="hero-gradient text-white rounded-2xl p-8 md:p-12 mb-10 shadow-lg">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="md:w-1/2">
+          <h1 class="text-3xl md:text-5xl font-bold mb-3">Compra local, apoya lo nuestro</h1>
+          <p class="text-lg md:text-xl font-light max-w-xl">Productos y servicios auténticos de Nicaragua — artesanos, comercios y autolotes en un solo lugar. Pagos seguros con <strong>Lafise</strong>.</p>
+          <div class="mt-6">
+            <a href="#categorias" class="inline-block bg-white text-[var(--lani-primary)] font-semibold px-6 py-3 rounded-full shadow hover:opacity-95">Explorar Tiendas →</a>
+          </div>
+        </div>
+        <div class="hidden md:block md:w-1/2">
+          <img src="https://images.unsplash.com/photo-1598515219686-9b0f2b6f0e1c?q=80&w=1200&auto=format&fit=crop" alt="Hero" class="rounded-xl shadow-lg object-cover w-full h-60">
+        </div>
+      </div>
+    </section>
+
+    <!-- Vendedor del Mes -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-center mb-6">✨ Vendedor del Mes</h2>
+      <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row items-center gap-6">
+        <div class="flex-shrink-0">
+          <img src="https://images.unsplash.com/photo-1542848135-e51c86a34559?w=800&q=80&auto=format&fit=crop" alt="Vendedor" class="w-36 h-36 rounded-full object-cover border-4 border-[var(--lani-secondary)]">
+        </div>
+        <div class="text-center md:text-left md:flex-1">
+          <h3 class="text-2xl font-semibold text-[var(--lani-primary)]">Doña Ana — Repostería Casera</h3>
+          <p class="text-gray-600 mt-2">Sabores tradicionales con recetas de familia. Entregas locales y pedidos por anticipado.</p>
+          <div class="flex items-center gap-3 mt-3 justify-center md:justify-start">
+            <div class="text-yellow-500">★★★★★</div>
+            <div class="text-sm text-gray-500">(158 opiniones)</div>
+          </div>
+          <div class="mt-4">
+            <button class="px-5 py-2 rounded-full bg-[var(--lani-secondary)] text-white font-semibold hover:bg-[var(--lani-primary)]">Visitar su Tienda</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explora por Categorías -->
+    <section id="categorias" class="mb-12">
+      <h2 class="text-2xl font-bold text-center mb-6">🛒 Explora por Categorías</h2>
+
+      <!-- Grid de colecciones / categorías -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Sabores de Managua -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🍰 Sabores de Managua</h3>
+            <a href="#managua" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Reposterías, cafés, jugos y quesillos.</p>
+          <div id="managuaProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Hogar y Limpieza -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🧹 Hogar y Limpieza</h3>
+            <a href="#hogar" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Productos para el día a día del hogar.</p>
+          <div id="hogarProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Hogar y Estilo -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🪑 Hogar y Estilo</h3>
+            <a href="#muebles" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Muebles, decoración y artesanía para tu casa.</p>
+          <div id="mueblesProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Belleza y Catálogo -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">💄 Belleza y Catálogo</h3>
+            <a href="#belleza" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Cosméticos, catálogos y cuidado personal.</p>
+          <div id="bellezaProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Autos y Servicios -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🚗 Autos y Servicios</h3>
+            <a href="#autos" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Autolotes, mecánicos, autolavados y más.</p>
+          <div id="autosProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Hecho en Nicaragua -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🎨 Hecho en Nicaragua</h3>
+            <a href="#hecho" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Artesanías, textiles y piezas únicas.</p>
+          <div id="hechoProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Autolotes (sección dedicada) -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg">🚘 Autolotes</h3>
+            <a href="#autolotes" class="text-sm text-[var(--lani-primary)] font-semibold">Ver todo →</a>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Vehículos en venta y servicios asociados.</p>
+          <div id="autolotesProducts" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Promociones / Ofertas -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-center mb-6">🔥 Ofertas y Promociones</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl shadow p-4 text-center">
+          <h4 class="font-semibold">Combo Café + Pastel</h4>
+          <p class="text-sm text-gray-600 mt-2">10% descuento por tiempo limitado.</p>
+          <div class="mt-3"><button class="px-4 py-2 rounded-full bg-[var(--lani-primary)] text-white">Aprovechar</button></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-4 text-center">
+          <h4 class="font-semibold">Lavado + Descuento</h4>
+          <p class="text-sm text-gray-600 mt-2">Cupón gratis en tu segunda visita.</p>
+          <div class="mt-3"><button class="px-4 py-2 rounded-full bg-[var(--lani-primary)] text-white">Ver oferta</button></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-4 text-center">
+          <h4 class="font-semibold">Créditos Lani Ads</h4>
+          <p class="text-sm text-gray-600 mt-2">Bonos para los primeros vendedores activos.</p>
+          <div class="mt-3"><button class="px-4 py-2 rounded-full bg-[var(--lani-primary)] text-white">Quiero anunciar</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Confianza / Pagos -->
+    <section id="confianza" class="mb-12">
+      <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
+        <div class="flex-shrink-0">
+          <img src="https://images.unsplash.com/photo-1600180758897-5c6a7a9f4b58?q=80&w=600&auto=format&fit=crop" alt="Seguridad" class="w-40 h-28 object-cover rounded-md">
+        </div>
+        <div>
+          <h3 class="font-bold text-xl">Pagos Seguros con Lafise</h3>
+          <p class="text-gray-600 mt-2">Todas las transacciones se procesan por la pasarela de Lafise. Protección al comprador, soporte local y conciliaciones claras para vendedores.</p>
+          <ul class="mt-3 text-sm text-gray-600 list-disc list-inside">
+            <li>Protección contra fraudes</li>
+            <li>Reconciliación diaria de ventas</li>
+            <li>Soporte para disputas y reembolsos</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t py-8 rounded-t-xl">
+      <div class="flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto px-4">
+        <div class="flex items-center gap-3">
+          <img src="https://raw.githubusercontent.com/Dereck48G/Lani-pick-deck-landing/main/ChatGPT%20Image%20Aug%2030%2C%202025%2C%2010_42_52%20AM.png" class="h-8" alt="Lani">
+          <span class="font-semibold">Lani</span>
+        </div>
+        <div class="text-sm text-gray-500 mt-3 md:mt-0">&copy; 2025 Lani. Todos los derechos reservados.</div>
+        <div class="flex gap-4 mt-3 md:mt-0">
+          <a href="#" class="text-gray-500 hover:text-[var(--lani-primary)]">Facebook</a>
+          <a href="#" class="text-gray-500 hover:text-[var(--lani-primary)]">Instagram</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Carrito Modal -->
+  <div id="carritoModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-xl p-6 relative shadow-2xl">
+      <button id="closeModal" class="absolute right-4 top-4 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
+      <h3 class="text-2xl font-bold text-[var(--lani-primary)]">🛒 Tu Carrito</h3>
+      <ul id="cartItems" class="mt-4 space-y-3 max-h-56 overflow-y-auto"></ul>
+      <div class="mt-4 pt-4 border-t flex justify-between items-center font-bold">
+        <span>Total:</span>
+        <span id="cartTotal" class="text-xl text-[var(--lani-secondary)]">$0.00</span>
+      </div>
+      <div class="mt-4">
+        <button id="checkoutBtn" class="w-full bg-[var(--lani-secondary)] text-white py-3 rounded-full font-semibold hover:bg-[var(--lani-primary)]">Finalizar compra (Lafise)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS: Productos y lógica de UI -->
+  <script>
+    // Lista demo de productos (por categoría). Imágenes de Unsplash para visual.
+    const productCatalog = [
+      // Sabores de Managua
+      { id: 'm1', name: 'Quesillo de La Paz', price: 3.5, category: 'managua', image: 'https://images.unsplash.com/photo-1550935570-38c9244c4896?q=80&w=800&auto=format&fit=crop', description: 'Quesillo artesanal' },
+      { id: 'm2', name: 'Pastel de El Rosal', price: 4.0, category: 'managua', image: 'https://images.unsplash.com/photo-1579710759602-7b45f8a7ea9e?q=80&w=800&auto=format&fit=crop', description: 'Repostería casera' },
+      { id: 'm3', name: 'Café de Matagalpa (250g)', price: 12.0, category: 'managua', image: 'https://images.unsplash.com/photo-1511920170033-f363c32e564d?q=80&w=800&auto=format&fit=crop', description: 'Café de altura' },
+
+      // Hogar y Limpieza
+      { id: 'h1', name: 'Detergente Eco', price: 6.5, category: 'hogar', image: 'https://images.unsplash.com/photo-1600180758897-5c6a7a9f4b58?q=80&w=800&auto=format&fit=crop', description: 'Limpieza para el hogar' },
+      { id: 'h2', name: 'Aromatizante Natural', price: 3.5, category: 'hogar', image: 'https://images.unsplash.com/photo-1616628186395-0f8fd6d0d1b6?q=80&w=800&auto=format&fit=crop', description: 'Aroma natural' },
+
+      // Hogar y Estilo
+      { id: 'f1', name: 'Cesta de Bambú', price: 15.0, category: 'muebles', image: 'https://images.unsplash.com/photo-1589133816550-a3557e934a41?q=80&w=800&auto=format&fit=crop', description: 'Tejida a mano' },
+      { id: 'f2', name: 'Escultura de Barro', price: 25.0, category: 'muebles', image: 'https://images.unsplash.com/photo-1606708678082-bfb248a37f59?q=80&w=800&auto=format&fit=crop', description: 'Artesanía' },
+
+      // Belleza y Catálogo
+      { id: 'b1', name: 'Perfume Artesanal', price: 10.0, category: 'belleza', image: 'https://images.unsplash.com/photo-1542831371-d531d36971e6?q=80&w=800&auto=format&fit=crop', description: 'Aromas únicos' },
+      { id: 'b2', name: 'Kit Belleza', price: 18.0, category: 'belleza', image: 'https://images.unsplash.com/photo-1556228720-7a6b2c6e0c55?q=80&w=800&auto=format&fit=crop', description: 'Cuidado personal' },
+
+      // Autos y Servicios
+      { id: 'a1', name: 'Lavado Express', price: 8.0, category: 'autos', image: 'https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?q=80&w=800&auto=format&fit=crop', description: 'Lavado completo' },
+      { id: 'a2', name: 'Cambio de Aceite', price: 25.0, category: 'autos', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop', description: 'Servicio mecánico básico' },
+
+      // Hecho en Nicaragua
+      { id: 'c1', name: 'Huipil Tradicional', price: 30.0, category: 'hecho', image: 'https://images.unsplash.com/photo-1583002626159-d2d14909f257?q=80&w=800&auto=format&fit=crop', description: 'Textil hecho a mano' },
+      { id: 'c2', name: 'Dulces de Leche', price: 6.0, category: 'hecho', image: 'https://images.unsplash.com/photo-1594895058721-a48911f93f54?q=80&w=800&auto=format&fit=crop', description: 'Receta tradicional' },
+
+      // Autolotes
+      { id: 'car1', name: 'Camioneta Blanca (2016)', price: 8500.0, category: 'autolotes', image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1200&auto=format&fit=crop', description: 'Excelente estado' },
+      { id: 'car2', name: 'Sedán Gris (2018)', price: 6500.0, category: 'autolotes', image: 'https://images.unsplash.com/photo-1502877341904-ef1dff2f3b34?q=80&w=1200&auto=format&fit=crop', description: 'Buen mantenimiento' }
+    ];
+
+    // Mapping category -> container id
+    const categoryMap = {
+      'managua': 'managuaProducts',
+      'hogar': 'hogarProducts',
+      'muebles': 'mueblesProducts',
+      'belleza': 'bellezaProducts',
+      'autos': 'autosProducts',
+      'hecho': 'hechoProducts',
+      'autolotes': 'autolotesProducts'
+    };
+
+    // Render inicial por categorías
+    function renderCategoryGrids() {
+      // limpiar contenedores
+      Object.values(categoryMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+      });
+
+      productCatalog.forEach(p => {
+        const containerId = categoryMap[p.category];
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const card = document.createElement('div');
+        card.className = 'product-card bg-white rounded-lg p-3 flex flex-col items-center text-center';
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" class="w-full h-28 object-cover rounded-md mb-3">
+          <div class="w-full">
+            <h4 class="font-semibold text-sm">${p.name}</h4>
+            <p class="text-xs text-gray-500 truncate">${p.description}</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="font-bold text-[var(--lani-secondary)]">${p.price >= 100 ? '$' + p.price.toFixed(0) : '$' + p.price.toFixed(2)}</span>
+              <button class="px-3 py-1 text-xs rounded-full bg-[var(--lani-primary)] text-white add-to-cart" data-id="${p.id}">Añadir</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      attachAddListeners();
+      updateCartCount();
+    }
+
+    // Simple search (filtra por nombre/descr)
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) { renderCategoryGrids(); return; }
+      // crear resultado temporal en "Sabores de Managua" y "Hecho en Nicaragua"
+      const filtered = productCatalog.filter(p => (p.name + ' ' + p.description).toLowerCase().includes(q));
+      // re-render los contenedores con sólo los filtrados (simple UX)
+      Object.values(categoryMap).forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
+      filtered.forEach(p => {
+        const containerId = categoryMap[p.category] || 'managuaProducts';
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const card = document.createElement('div');
+        card.className = 'product-card bg-white rounded-lg p-3 flex flex-col items-center text-center';
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" class="w-full h-28 object-cover rounded-md mb-3">
+          <div class="w-full">
+            <h4 class="font-semibold text-sm">${p.name}</h4>
+            <p class="text-xs text-gray-500 truncate">${p.description}</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="font-bold text-[var(--lani-secondary)]">${p.price >= 100 ? '$' + p.price.toFixed(0) : '$' + p.price.toFixed(2)}</span>
+              <button class="px-3 py-1 text-xs rounded-full bg-[var(--lani-primary)] text-white add-to-cart" data-id="${p.id}">Añadir</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      attachAddListeners();
+    });
+
+    // Carrito (simple)
+    let cart = [];
+    function attachAddListeners() {
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          const product = productCatalog.find(p => p.id === id);
+          if (!product) return;
+          const existing = cart.find(i => i.id === id);
+          if (existing) existing.qty++;
+          else cart.push({ ...product, qty: 1 });
+          updateCart();
+        };
+      });
+    }
+
+    function updateCart() {
+      const cartItemsEl = document.getElementById('cartItems');
+      const cartTotalEl = document.getElementById('cartTotal');
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center bg-gray-50 p-3 rounded';
+        li.innerHTML = `<div class="flex-1"><div class="font-semibold">${item.name}</div><div class="text-xs text-gray-500">x${item.qty}</div></div><div class="font-bold text-[var(--lani-secondary)]">${item.price >= 100 ? '$' + (item.price*item.qty).toFixed(0) : '$' + (item.price*item.qty).toFixed(2)}</div>`;
+        cartItemsEl.appendChild(li);
+        total += item.price * item.qty;
+      });
+      cartTotalEl.textContent = '$' + total.toFixed(2);
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const count = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartCount').textContent = count;
+    }
+
+    // botones modal
+    const carritoBtn = document.getElementById('carritoBtn');
+    const carritoModal = document.getElementById('carritoModal');
+    const closeModal = document.getElementById('closeModal');
+    carritoBtn.addEventListener('click', () => carritoModal.classList.remove('hidden'));
+    closeModal.addEventListener('click', () => carritoModal.classList.add('hidden'));
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      alert('Simulación: redirigiendo a pasarela Lafise (simulado).');
+    });
+
+    // Inicializar
+    renderCategoryGrids();
+  </script>
+
+</body>
+</html>
