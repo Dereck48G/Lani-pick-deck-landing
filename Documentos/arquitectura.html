@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura de Alto Nivel - Lani v4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .arch-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        .arrow {
+            stroke: #94a3b8;
+            stroke-width: 2;
+            marker-end: url(#arrowhead);
+        }
+
+        .line-dashed {
+            stroke-dasharray: 5, 5;
+        }
+
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            text-align: left;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .module-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .code-block .method {
+            font-weight: 700;
+        }
+
+        .code-block .get {
+            color: #60a5fa;
+        }
+
+        /* blue-400 */
+        .code-block .post {
+            color: #4ade80;
+        }
+
+        /* green-400 */
+        .code-block .put {
+            color: #facc15;
+        }
+
+        /* yellow-400 */
+        .code-block .delete {
+            color: #f87171;
+        }
+
+        /* red-400 */
+        .code-block .role {
+            background-color: #334155;
+            color: #94a3b8;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <div class="arch-container">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-slate-900">Arquitectura Técnica de Alto Nivel (v4)</h1>
+            <p class="mt-2 text-lg text-slate-600">Visión general de componentes, flujos, módulos y API endpoints para
+                el MVP de Lani.</p>
+        </div>
+
+        <!-- Diagrama Visual SVG -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+            <svg width="100%" viewBox="0 0 1200 850" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+                    </marker>
+                </defs>
+
+                <!-- Clientes -->
+                <g transform="translate(20, 250)">
+                    <rect x="0" y="0" width="220" height="130" rx="10" fill="#eff6ff" stroke="#60a5fa"
+                        stroke-width="1.5" />
+                    <text x="110" y="25" font-family="Inter" font-weight="bold" font-size="16"
+                        text-anchor="middle">Cliente Móvil</text>
+                    <text x="110" y="45" font-family="Inter" font-size="14" fill="#334155"
+                        text-anchor="middle">[FlutterFlow]</text>
+                    <text x="20" y="75" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">• UI
+                        POS/Inventario</text>
+                    <text x="20" y="95" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">• DB Local
+                        (Offline)</text>
+                    <text x="20" y="115" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">•
+                        Sincronización</text>
+                </g>
+                <g transform="translate(20, 450)">
+                    <rect x="0" y="0" width="220" height="130" rx="10" fill="#f0fdf4" stroke="#4ade80"
+                        stroke-width="1.5" />
+                    <text x="110" y="25" font-family="Inter" font-weight="bold" font-size="16"
+                        text-anchor="middle">Cliente Web</text>
+                    <text x="110" y="45" font-family="Inter" font-size="14" fill="#334155"
+                        text-anchor="middle">[React]</text>
+                    <text x="20" y="75" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">•
+                        Dashboard Avanzado</text>
+                    <text x="20" y="95" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">•
+                        Reportes</text>
+                    <text x="20" y="115" font-family="Inter" font-size="12" fill="#475569" text-anchor="start">• Gestión
+                        Marketplace</text>
+                </g>
+
+                <!-- BFF -->
+                <g transform="translate(300, 340)">
+                    <rect x="0" y="0" width="250" height="100" rx="10" fill="#f1f5f9" stroke="#94a3b8"
+                        stroke-width="1.5" />
+                    <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="16"
+                        text-anchor="middle">Backend (APIs)</text>
+                    <text x="125" y="55" font-family="Inter" font-size="14" fill="#334155" text-anchor="middle">[.NET 8
+                        / C#]</text>
+                    <text x="125" y="75" font-family="Inter" font-size="12" fill="#475569"
+                        text-anchor="middle">Contenedor en Cloud Run</text>
+                </g>
+
+                <!-- DevOps / IaC -->
+                <g transform="translate(300, 50)">
+                    <rect x="0" y="0" width="250" height="100" rx="10" fill="#f5f3ff" stroke="#8b5cf6"
+                        stroke-width="1.5" />
+                    <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="16"
+                        text-anchor="middle">DevOps & Orquestación</text>
+                    <text x="60" y="65" font-family="Inter" font-size="14" fill="#334155" text-anchor="middle">Terraform
+                        (IaC)</text>
+                    <text x="190" y="65" font-family="Inter" font-size="14" fill="#334155"
+                        text-anchor="middle">CI/CD</text>
+                </g>
+
+                <!-- Cloud Infrastructure -->
+                <g transform="translate(600, 25)">
+                    <rect x="0" y="0" width="580" height="500" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"
+                        stroke-dasharray="6" />
+                    <text x="290" y="35" font-family="Inter" font-weight="bold" font-size="18" text-anchor="middle"
+                        fill="#475569">Cloud Infrastructure (GCP Recomendado)</text>
+
+                    <g transform="translate(25, 70)">
+                        <rect x="0" y="0" width="250" height="100" rx="8" fill="#fffbeb" stroke="#f59e0b"
+                            stroke-width="1.5" />
+                        <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Firebase Auth</text>
+                        <text x="125" y="50" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">(Identidad)</text>
+                        <text x="125" y="75" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Usuarios, Roles, OTP</text>
+                    </g>
+                    <g transform="translate(305, 70)">
+                        <rect x="0" y="0" width="250" height="100" rx="8" fill="#ecfdf5" stroke="#10b981"
+                            stroke-width="1.5" />
+                        <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Cloud SQL (PostgreSQL)</text>
+                        <text x="125" y="50" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">(Base de Datos Transaccional)</text>
+                        <text x="125" y="75" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Órdenes, Inventario, Cajas</text>
+                    </g>
+                    <g transform="translate(25, 185)">
+                        <rect x="0" y="0" width="250" height="100" rx="8" fill="#eff6ff" stroke="#3b82f6"
+                            stroke-width="1.5" />
+                        <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Firestore</text>
+                        <text x="125" y="50" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">(Base de Datos Realtime)</text>
+                        <text x="125" y="75" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Catálogo del Marketplace</text>
+                    </g>
+                    <g transform="translate(305, 185)">
+                        <rect x="0" y="0" width="250" height="100" rx="8" fill="#f1f5f9" stroke="#94a3b8"
+                            stroke-width="1.5" />
+                        <text x="125" y="30" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Cloud Storage</text>
+                        <text x="125" y="50" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">(Almacenamiento de Objetos)</text>
+                        <text x="125" y="75" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Imágenes de Productos, Docs KYC</text>
+                    </g>
+                    <g transform="translate(25, 300)">
+                        <rect x="0" y="0" width="530" height="80" rx="8" fill="#f1f5f9" stroke="#94a3b8"
+                            stroke-width="1.5" />
+                        <text x="265" y="25" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Servicios Serverless</text>
+                        <text x="130" y="55" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Cloud Functions (Triggers .NET)</text>
+                        <text x="400" y="55" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Pub/Sub (Mensajería de Eventos)</text>
+                    </g>
+                </g>
+
+                <!-- Terceros -->
+                <g transform="translate(600, 575)">
+                    <rect x="0" y="0" width="580" height="100" rx="10" fill="#fef2f2" stroke="#fca5a5"
+                        stroke-width="1.5" />
+                    <text x="290" y="25" font-family="Inter" font-weight="bold" font-size="16" text-anchor="middle"
+                        fill="#b91c1c">Servicios de Terceros (Integraciones)</text>
+                    <text x="120" y="65" font-family="Inter" font-size="14" fill="#475569" text-anchor="middle">•
+                        Proveedor KYC</text>
+                    <text x="290" y="65" font-family="Inter" font-size="14" fill="#475569" text-anchor="middle">•
+                        Pasarela de Pago</text>
+                    <text x="460" y="65" font-family="Inter" font-size="14" fill="#475569" text-anchor="middle">•
+                        SMS/WhatsApp</text>
+                </g>
+
+                <!-- Conexiones -->
+                <line x1="240" y1="315" x2="300" y2="360" class="arrow" />
+                <line x1="240" y1="485" x2="300" y2="420" class="arrow" />
+                <line x1="425" y1="150" x2="425" y2="300" class="arrow line-dashed" />
+                <text x="390" y="225" font-family="Inter" font-size="12" fill="#475569" text-anchor="middle"
+                    transform="rotate(-90 425,225)">Despliega</text>
+                <line x1="550" y1="100" x2="600" y2="100" class="arrow line-dashed" />
+                <text x="575" y="90" font-family="Inter" font-size="12" fill="#475569"
+                    text-anchor="middle">Provisiona</text>
+                <line x1="550" y1="390" x2="600" y2="390" class="arrow" />
+                <line x1="890" y1="525" x2="890" y2="575" class="arrow" />
+            </svg>
+        </div>
+        <!-- Firebase Auth Diagrama -->
+        <div class="mt-12">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Firebase Auth - Identidad y Seguridad</h2>
+            <p class="text-slate-600 mb-6">Flujo de autenticación, OTP y roles de usuario para el MVP de Lani.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                <svg width="100%" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+                        </marker>
+                    </defs>
+
+                    <!-- Usuario Móvil/Web -->
+                    <g transform="translate(20, 80)">
+                        <rect x="0" y="0" width="180" height="80" rx="10" fill="#eff6ff" stroke="#60a5fa"
+                            stroke-width="1.5" />
+                        <text x="90" y="25" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Usuario</text>
+                        <text x="90" y="50" font-family="Inter" font-size="12" fill="#334155" text-anchor="middle">Móvil
+                            / Web</text>
+                    </g>
+
+                    <!-- Firebase Auth -->
+                    <g transform="translate(250, 50)">
+                        <rect x="0" y="0" width="180" height="120" rx="10" fill="#fffbeb" stroke="#f59e0b"
+                            stroke-width="1.5" />
+                        <text x="90" y="25" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Firebase Auth</text>
+                        <text x="90" y="50" font-family="Inter" font-size="12" fill="#475569" text-anchor="middle">OTP /
+                            Email / Social</text>
+                        <text x="90" y="70" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">Gestión de Usuarios</text>
+                        <text x="90" y="90" font-family="Inter" font-size="12" fill="#475569"
+                            text-anchor="middle">Custom Roles</text>
+                    </g>
+
+                    <!-- Backend / BFF -->
+                    <g transform="translate(500, 80)">
+                        <rect x="0" y="0" width="180" height="80" rx="10" fill="#f1f5f9" stroke="#94a3b8"
+                            stroke-width="1.5" />
+                        <text x="90" y="25" font-family="Inter" font-weight="bold" font-size="14"
+                            text-anchor="middle">Backend (BFF)</text>
+                        <text x="90" y="50" font-family="Inter" font-size="12" fill="#334155"
+                            text-anchor="middle">Verifica Roles & OTP</text>
+                    </g>
+
+                    <!-- Flechas -->
+                    <line x1="200" y1="120" x2="250" y2="110" class="arrow" />
+                    <line x1="430" y1="110" x2="500" y2="120" class="arrow" />
+                </svg>
+
+                <div class="mt-4 text-slate-600">
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>OTP:</strong> Envío de códigos a móviles para login seguro.</li>
+                        <li><strong>Custom Roles:</strong> Admin, Cajero, Usuario, etc., manejados con Firebase Custom
+                            Claims.</li>
+                        <li><strong>Integración con Backend:</strong> Backend verifica roles y genera JWT para sesiones.
+                        </li>
+                        <li><strong>Flujo seguro:</strong> El usuario se autentica → Firebase valida → Backend controla
+                            acceso.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Módulos Clave del MVP -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Módulos Clave del MVP</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">🛠️ Herramienta de Gestión (Gratuita)</h3>
+                    <ul class="space-y-3 text-left text-slate-600 list-disc list-inside">
+                        <li><span class="font-semibold">POS Móvil:</span> Flujo de venta rápido y fácil, con escáner de
+                            código de barras.</li>
+                        <li><span class="font-semibold">Gestión de Inventario:</span> Registro de productos, control de
+                            stock y alertas de existencias bajas.</li>
+                        <li><span class="font-semibold">Registro de Gastos:</span> Clasificación de egresos y control de
+                            deudas a proveedores.</li>
+                        <li><span class="font-semibold">Gestión de Cajas:</span> Flujo de apertura, arqueo y cierre de
+                            caja.</li>
+                        <li><span class="font-semibold">Dashboard y Reportes Básicos:</span> Resumen diario de ventas y
+                            gastos.</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">🛒 Marketplace Lani</h3>
+                    <ul class="space-y-3 text-left text-slate-600 list-disc list-inside">
+                        <li><span class="font-semibold">Tienda Virtual Unificada:</span> Publicación de productos con un
+                            solo clic.</li>
+                        <li><span class="font-semibold">Experiencia del Comprador:</span> Interfaz web para explorar,
+                            buscar y comprar de forma segura.</li>
+                        <li><span class="font-semibold">Sistema de Reputación:</span> Calificaciones y reseñas para
+                            construir confianza.</li>
+                        <li><span class="font-semibold">Verificación de Vendedores (KYB):</span> Proceso de validación
+                            para garantizar la seguridad del marketplace.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Componentes de Software -->
+        <div class="mt-12">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Detalle de Componentes de Software</h2>
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="p-4 font-bold text-slate-800">Módulo / Sistema</th>
+                            <th class="p-4 font-bold text-slate-800">Lenguaje / Framework</th>
+                            <th class="p-4 font-bold text-slate-800">Versión Sugerida</th>
+                            <th class="p-4 font-bold text-slate-800">Plataforma</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-semibold">Cliente Móvil</td>
+                            <td class="p-4">Dart / FlutterFlow</td>
+                            <td class="p-4">Flutter 3+</td>
+                            <td class="p-4">iOS, Android</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-semibold">Cliente Web</td>
+                            <td class="p-4">JavaScript / React</td>
+                            <td class="p-4">React 18+</td>
+                            <td class="p-4">Web</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-semibold">Backend (BFF/APIs)</td>
+                            <td class="p-4">C# / .NET</td>
+                            <td class="p-4">.NET 8</td>
+                            <td class="p-4">Contenedor Docker</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-semibold">Infra como Código</td>
+                            <td class="p-4">Terraform</td>
+                            <td class="p-4">Última estable</td>
+                            <td class="p-4">Agnóstico</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+       <!-- Estimación de Costos Mensuales -->
+<div class="mt-12">
+    <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Estimación de Costos Mensuales (MVP Lani)</h2>
+    <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="p-4 font-bold text-slate-800">Servicio</th>
+                    <th class="p-4 font-bold text-slate-800">Detalle</th>
+                    <th class="p-4 font-bold text-slate-800">Cantidad</th>
+                    <th class="p-4 font-bold text-slate-800">Región</th>
+                    <th class="p-4 font-bold text-slate-800">Precio Total (USD)</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud Run</td>
+                    <td class="p-4">Services CPU (Request-based billing)</td>
+                    <td class="p-4">40,000,000</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$0.96</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud Run</td>
+                    <td class="p-4">Services Memory (Request-based billing)</td>
+                    <td class="p-4">20,000,000</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$0.05</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud Run</td>
+                    <td class="p-4">Requests</td>
+                    <td class="p-4">100,000</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$0.00</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Pub/Sub</td>
+                    <td class="p-4">Message Delivery Basic</td>
+                    <td class="p-4">30.42 GiB</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$0.80</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Pub/Sub</td>
+                    <td class="p-4">Topics message backlog</td>
+                    <td class="p-4">7</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$1.89</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud SQL (PostgreSQL)</td>
+                    <td class="p-4">Zonal - Micro instance in Americas</td>
+                    <td class="p-4">200</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$2.10</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud SQL (PostgreSQL)</td>
+                    <td class="p-4">Standard storage in Americas</td>
+                    <td class="p-4">2,000 GiB</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.47</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Firestore</td>
+                    <td class="p-4">Read Ops Iowa</td>
+                    <td class="p-4">1,520,833</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.00</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Firestore</td>
+                    <td class="p-4">Entity Writes Iowa</td>
+                    <td class="p-4">304,167</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.00</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Firestore</td>
+                    <td class="p-4">Storage Iowa</td>
+                    <td class="p-4">5 GiB</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.60</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud Storage</td>
+                    <td class="p-4">Standard Storage US Regional</td>
+                    <td class="p-4">50 GiB</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.90</td>
+                </tr>
+                <!-- Firebase Auth para pruebas -->
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Firebase Auth</td>
+                    <td class="p-4">Usuarios + OTP / Email / Social</td>
+                    <td class="p-4">Hasta 10,000 usuarios</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.00 (Free Tier)</td>
+                </tr>
+                <!-- Cloud Functions para pruebas -->
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Cloud Functions</td>
+                    <td class="p-4">Ejecución de funciones serverless (triggers de .NET / Pub/Sub)</td>
+                    <td class="p-4">2,000,000 invocaciones</td>
+                    <td class="p-4">us-central1</td>
+                    <td class="p-4">$0.00 (Free Tier)</td>
+                </tr>
+                <!-- FlutterFlow Basic -->
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">FlutterFlow Basic</td>
+                    <td class="p-4">Desarrollo de MVP, descarga de código, despliegue web</td>
+                    <td class="p-4">1 suscripción</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$39.00 / mes</td>
+                </tr>
+                <!-- Cuentas de tienda -->
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Google Play Developer</td>
+                    <td class="p-4">Publicación de app Android</td>
+                    <td class="p-4">1 cuenta</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$25.00 (Pago único)</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold">Apple Developer</td>
+                    <td class="p-4">Publicación de app iOS</td>
+                    <td class="p-4">1 cuenta</td>
+                    <td class="p-4">global</td>
+                    <td class="p-4">$99.00 / año</td>
+                </tr>
+                <tr class="hover:bg-slate-50 font-bold bg-slate-100">
+                    <td class="p-4" colspan="4">Total Estimado Inicial + Mensual</td>
+                    <td class="p-4">$183.45</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+        <!-- Endpoints Críticos Ampliados -->
+        <div class="mt-12">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Endpoints Críticos del BFF (.NET 8)</h2>
+            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+
+                <div>
+                    <h3 class="font-bold text-lg text-slate-700 mb-2">Autenticación y Seguridad</h3>
+                    <div class="space-y-4">
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/auth/otp/send <span
+                                    class="role">Público</span></p>
+                            <p class="text-slate-400 mt-1">Inicia el flujo de login enviando un código OTP.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/auth/otp/verify <span
+                                    class="role">Público</span></p>
+                            <p class="text-slate-400 mt-1">Verifica el OTP y retorna un JWT para la sesión.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method get">GET</span> /api/v1/users/me <span class="role">Usuario</span>
+                            </p>
+                            <p class="text-slate-400 mt-1">Obtiene los datos del perfil del usuario autenticado.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg text-slate-700 mb-2">Gestión de Negocio (CRUD)</h3>
+                    <div class="space-y-4">
+                        <div class="code-block">
+                            <p><span class="method get">GET</span> /api/v1/products <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Lista todos los productos del negocio.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/products <span class="role">Admin</span>
+                            </p>
+                            <p class="text-slate-400 mt-1">Crea un nuevo producto en el inventario.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method put">PUT</span> /api/v1/products/{id} <span class="role">Admin</span>
+                            </p>
+                            <p class="text-slate-400 mt-1">Actualiza la información de un producto existente.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method get">GET</span> /api/v1/expenses <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Obtiene la lista de gastos registrados.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/expenses <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Registra un nuevo gasto para la caja/sucursal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg text-slate-700 mb-2">Operaciones de Venta y Sincronización</h3>
+                    <div class="space-y-4">
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/sync/actions <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Endpoint principal para la sincronización offline.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/cash-registers/{id}/open <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Abre una caja con un monto inicial.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/cash-registers/{id}/close <span
+                                    class="role">Cajero/Admin</span></p>
+                            <p class="text-slate-400 mt-1">Cierra una caja y realiza el arqueo final.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg text-slate-700 mb-2">Marketplace y Verificación</h3>
+                    <div class="space-y-4">
+                        <div class="code-block">
+                            <p><span class="method get">GET</span> /api/v1/marketplace/products <span
+                                    class="role">Público</span></p>
+                            <p class="text-slate-400 mt-1">Lista los productos disponibles en el marketplace para los
+                                compradores.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method put">PUT</span> /api/v1/marketplace/products/{id}/publish <span
+                                    class="role">Admin</span></p>
+                            <p class="text-slate-400 mt-1">Publica o despublica un producto en el marketplace.</p>
+                        </div>
+                        <div class="code-block">
+                            <p><span class="method post">POST</span> /api/v1/kyb/verifications <span
+                                    class="role">Usuario</span></p>
+                            <p class="text-slate-400 mt-1">Inicia el proceso de verificación de negocio (KYB).</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
